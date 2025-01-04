@@ -128,21 +128,33 @@
             $('#investment-plan-form').on('submit', function(e) {
                 e.preventDefault();
                 
-                // Create formData object from the form
-                const formData = $(this).serialize();
-                
                 // Log form data for debugging
-                console.log('Form Data:', formData);
+                console.log('Form Data:', $(this).serialize());
 
                 $.ajax({
                     url: '../connection/CBYDP_EducationConnection.php',
                     type: 'POST',
-                    data: formData,
+                    data: $(this).serialize(),
                     dataType: 'json',
                     success: function(response) {
                         console.log('Server Response:', response);
                         
                         if (response.status === 'success') {
+                            // Get all necessary parameters for PDF generation
+                            const calendar_year = $('#calendar_year').val();
+                            const prepared_by_name = $('#prepared_by_name').val();
+                            const prepared_by_position = $('#prepared_by_position').val();
+                            const approved_by_name = $('#approved_by_name').val();
+                            const approved_by_position = $('#approved_by_position').val();
+
+                            // Construct PDF URL with all parameters
+                            const pdfUrl = '../connection/pdf_cbydp_education.php?' + 
+                                'year=' + encodeURIComponent(calendar_year) +
+                                '&prepared_by_name=' + encodeURIComponent(prepared_by_name) +
+                                '&prepared_by_position=' + encodeURIComponent(prepared_by_position) +
+                                '&approved_by_name=' + encodeURIComponent(approved_by_name) +
+                                '&approved_by_position=' + encodeURIComponent(approved_by_position);
+
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Success!',
@@ -152,7 +164,7 @@
                                 cancelButtonText: 'Close'
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    window.open(response.pdf_url, '_blank');
+                                    window.open(pdfUrl, '_blank');
                                 }
                             });
                         } else {
