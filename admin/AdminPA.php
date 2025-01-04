@@ -62,8 +62,8 @@ include("../connection/Connection.php");
             </div>
 
             <div id="uploadMenu" class="upload-menu" style="display: none;">
-                <a href="../post/CBYDP_Education.php">Post Education</a>
-                <a href="../post/CBYDP_Health.php">Post Health</a>
+            <a href="../post/CBYDP_Education.php">Post Education</a>
+            <a href="../post/CBYDP_Health.php">Post Health</a>
                 <a href="../post/CBYDP_Environment.php">Post Environment</a>
                 <a href="../post/CBYDP_Social.php">Post Social Inclusion and Equity</a>
                 <a href="../post/CBYDP_Citizenship.php">Post Active Citizenship</a>
