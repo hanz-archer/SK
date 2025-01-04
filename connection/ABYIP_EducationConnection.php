@@ -1,5 +1,5 @@
 <?php
-include("../connection/Connection.php"); // Adjust the path as necessary
+include("../connection/Connection.php");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Sanitize and retrieve POST data
@@ -25,22 +25,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         performance_indicator, period_of_implementation, mooe, co, total, 
         person_responsible, prepared_by_name, prepared_by_position, 
         approved_by_name, approved_by_position
-    ) VALUES (
-        '$calendar_year', '$reference_code', '$ppas', '$description', '$expected_result',
-        '$performance_indicator', '$period_of_implementation', '$mooe', '$co', '$total',
-        '$person_responsible', '$prepared_by_name', '$prepared_by_position', 
-        '$approved_by_name', '$approved_by_position'
-    )";
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    // Execute the query and check for success
-    if (mysqli_query($conn, $sql)) {
-        echo json_encode(['status' => 'success', 'message' => 'Investment plan submitted successfully!']);
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("issssssdddsssss", 
+        $calendar_year, $reference_code, $ppas, $description, $expected_result,
+        $performance_indicator, $period_of_implementation, $mooe, $co, $total,
+        $person_responsible, $prepared_by_name, $prepared_by_position,
+        $approved_by_name, $approved_by_position
+    );
+
+    if ($stmt->execute()) {
+        // Generate PDF URL
+        $pdf_url = "../connection/pdf_education.php?table=pa_education&year=" . urlencode($calendar_year) . "&month=" . urlencode($period_of_implementation);
+        
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Investment plan submitted successfully!',
+            'pdf_url' => $pdf_url
+        ]);
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'Error submitting the investment plan. Please try again.']);
-        die(mysqli_error($conn));  
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Error submitting the investment plan: ' . $stmt->error
+        ]);
     }
 
-    // Close the connection
-    mysqli_close($conn);
+    $stmt->close();
+    $conn->close();
 }
 ?>
