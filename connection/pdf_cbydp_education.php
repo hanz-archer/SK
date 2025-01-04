@@ -42,16 +42,65 @@ class PDF extends FPDF {
         $this->SetFont('Arial', '', 10);
         $this->MultiCell(0, 5, 'For the youth to participate in accessible, developmental, quality, and relevant formal, non-formal and informal lifelong learning and training that prepares graduates to be globally competitive but responsive to national needs and to prepare them for the workplace and the emergence of new media and other technologies.');
         
-        // Table Header
+        // Table Header with exact formatting for portrait
         $this->Ln(5);
         $this->SetFont('Arial', 'B', 8);
-        $this->SetFillColor(200, 200, 200);
-        $this->Cell(40, 10, 'YOUTH DEVELOPMENT CONCERN', 1, 0, 'C', true);
-        $this->Cell(30, 10, 'OBJECTIVE', 1, 0, 'C', true);
-        $this->Cell(30, 10, 'PERFORMANCE INDICATOR', 1, 0, 'C', true);
-        $this->Cell(45, 10, 'TARGET', 1, 0, 'C', true);
-        $this->Cell(25, 10, 'PPAs', 1, 0, 'C', true);
-        $this->Cell(20, 10, 'BUDGET', 1, 1, 'C', true);
+        $this->SetFillColor(255, 255, 255);
+
+        // Define column widths for portrait (adjusted to fit page)
+        $col_widths = array(40, 30, 35, 45, 25, 25);
+        
+        // First row of headers
+        $this->Cell($col_widths[0], 10, 'YOUTH DEVELOPMENT CONCERN', 1, 0, 'C');
+        $this->Cell($col_widths[1], 10, 'OBJECTIVE', 1, 0, 'C');
+        $this->Cell($col_widths[2], 10, 'PERFORMANCE INDICATOR', 1, 0, 'C');
+        
+        // TARGET header spanning 3 columns
+        $this->Cell($col_widths[3], 5, 'TARGET', 1, 0, 'C');
+        
+        $this->Cell($col_widths[4], 10, 'PPAs', 1, 0, 'C');
+        $this->Cell($col_widths[5], 10, 'BUDGET', 1, 1, 'C');
+
+        // Second row for TARGET years
+        $this->Cell($col_widths[0], 5, '', 0, 0);
+        $this->Cell($col_widths[1], 5, '', 0, 0);
+        $this->Cell($col_widths[2], 5, '', 0, 0);
+        
+        // TARGET subheaders
+        $year_width = $col_widths[3] / 3;
+        $this->Cell($year_width, 5, '2024', 1, 0, 'C');
+        $this->Cell($year_width, 5, '2025', 1, 0, 'C');
+        $this->Cell($year_width, 5, '2026', 1, 0, 'C');
+        
+        $this->Cell($col_widths[4], 5, '', 0, 0);
+        $this->Cell($col_widths[5], 5, '', 0, 1);
+    }
+
+    // Add a MultiCell with auto-height function
+    function MultiCellAutoHeight($w, $txt, $border=1, $align='L') {
+        // Calculate height needed for the text
+        $cw = $this->GetStringWidth($txt);
+        $h = 5; // minimum height
+        
+        if($cw > $w) {
+            $words = explode(' ', $txt);
+            $line = '';
+            $lines = 1;
+            
+            foreach($words as $word) {
+                $testLine = $line . ' ' . $word;
+                if($this->GetStringWidth($testLine) > $w) {
+                    $lines++;
+                    $line = $word;
+                } else {
+                    $line = $testLine;
+                }
+            }
+            $h = max($h, $lines * 5);
+        }
+        
+        $this->MultiCell($w, $h/2, $txt, $border, $align);
+        return $h;
     }
 
     // Footer
@@ -84,7 +133,7 @@ class PDF extends FPDF {
 }
 
 // Create PDF object
-$pdf = new PDF('P', 'mm', 'A4');
+$pdf = new PDF('P', 'mm', 'A4'); // Changed to Portrait
 $pdf->AddPage();
 $pdf->SetFont('Arial', '', 8);
 
@@ -99,20 +148,62 @@ if(isset($_GET['year'])) {
     $stmt->execute();
     $result = $stmt->get_result();
     
+    // Define column widths (same as header)
+    $col_widths = array(40, 30, 35, 45, 25, 25);
+    
     while($row = $result->fetch_assoc()) {
-        // Output data in table format
-        $pdf->Cell(40, 10, $row['youth_development_concern'], 1, 0, 'L');
-        $pdf->Cell(30, 10, $row['objective'], 1, 0, 'L');
-        $pdf->Cell(30, 10, $row['performance_indicator'], 1, 0, 'L');
+        $startY = $pdf->GetY();
+        $startX = $pdf->GetX();
         
-        // Combine targets in one cell
-        $targets = "2024: " . $row['target_2024'] . "\n";
-        $targets .= "2025: " . $row['target_2025'] . "\n";
-        $targets .= "2026: " . $row['target_2026'];
-        $pdf->MultiCell(45, 10, $targets, 1, 'L');
+        // Store current position
+        $x = $startX;
         
-        $pdf->Cell(25, 10, $row['ppas'], 1, 0, 'L');
-        $pdf->Cell(20, 10, '₱' . number_format($row['budget'], 2), 1, 1, 'R');
+        // Calculate maximum height needed for this row
+        $heights = array();
+        
+        // Get heights for each cell
+        $pdf->SetX($x);
+        $heights[] = $pdf->MultiCellAutoHeight($col_widths[0], $row['youth_development_concern']);
+        
+        $pdf->SetXY($x + $col_widths[0], $startY);
+        $heights[] = $pdf->MultiCellAutoHeight($col_widths[1], $row['objective']);
+        
+        $pdf->SetXY($x + $col_widths[0] + $col_widths[1], $startY);
+        $heights[] = $pdf->MultiCellAutoHeight($col_widths[2], $row['performance_indicator']);
+        
+        // TARGET cells
+        $year_width = $col_widths[3] / 3;
+        $currentX = $x + $col_widths[0] + $col_widths[1] + $col_widths[2];
+        
+        // Use the maximum height for consistent row height
+        $maxHeight = max($heights);
+        
+        // Reset position and draw cells with consistent height
+        $pdf->SetXY($x, $startY);
+        
+        // Draw all cells with the maximum height
+        $pdf->MultiCell($col_widths[0], $maxHeight, $row['youth_development_concern'], 1, 'L');
+        $pdf->SetXY($x + $col_widths[0], $startY);
+        $pdf->MultiCell($col_widths[1], $maxHeight, $row['objective'], 1, 'L');
+        $pdf->SetXY($x + $col_widths[0] + $col_widths[1], $startY);
+        $pdf->MultiCell($col_widths[2], $maxHeight, $row['performance_indicator'], 1, 'L');
+        
+        // TARGET cells with consistent height
+        $pdf->SetXY($currentX, $startY);
+        $pdf->Cell($year_width, $maxHeight, $row['target_2024'] . ' students', 1, 0, 'C');
+        $pdf->Cell($year_width, $maxHeight, $row['target_2025'] . ' students', 1, 0, 'C');
+        $pdf->Cell($year_width, $maxHeight, $row['target_2026'] . ' students', 1, 0, 'C');
+        
+        // PPAs and Budget
+        $currentX = $x + array_sum(array_slice($col_widths, 0, 4));
+        $pdf->SetXY($currentX, $startY);
+        $pdf->MultiCell($col_widths[4], $maxHeight, $row['ppas'], 1, 'L');
+        
+        $pdf->SetXY($currentX + $col_widths[4], $startY);
+        $pdf->MultiCell($col_widths[5], $maxHeight, '₱' . number_format($row['budget'], 2) . "\nEvery year", 1, 'R');
+        
+        // Move to next row
+        $pdf->Ln(2);
     }
     
     $stmt->close();
