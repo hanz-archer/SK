@@ -1,0 +1,79 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('../images/HP_bg.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: white;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background-image: url("../images/HP_bg.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 70px;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+  }
+  
+  
+  .logo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo img {
+    width: 50px;
+    margin-right: 10px;
+  }
+  
+  .logo-text {
+    color: white;
+    font-size: 24px;
+    text-shadow: -1px -1px 0 #000000,  
+                  1px -1px 0 #000,
+                 -1px  1px 0 #000,
+                  1px  1px 0 #000;
+  }
+  
+  .nav-links {
+    display: flex;
+    align-items: center;
+  }
+  
+  .nav-item {
+    color: white;
+    text-decoration: none;
+    margin-right: 40px;
+    font-size: 20px;
+  }
+
+  .profile-container {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 8px;
+    width: 60%;
+    margin: 0 auto;
+    color: white;
+    text-shadow: 1px 1px 2px black;
+}
+
+.profile-details p {
+    font-size: 18px;
+    line-height: 1.6;
+} 

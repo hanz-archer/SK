@@ -1,0 +1,193 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('../images/HP_bg.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: white;
+}
+
+header {
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0);
+    padding: 10px; 
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 60px; 
+    width: 100%;
+    z-index: 1000;
+    position: fixed;
+    top: 0;
+    left: 0; 
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    width: 50px;
+    margin-right: 10px;
+}
+
+.logo-text {
+    color: white;
+    font-size: 24px;
+    text-shadow: -1px -2px 0 #000000,  
+                  1px -2px 0 #000,
+                 -1px  2px 0 #000,
+                  2px  2px 0 #000;
+  }
+
+.nav-links {
+    display: flex;
+    align-items: center;
+}
+
+.nav-item {
+    color: white;
+    text-decoration: none;
+    margin-right: 20px;
+    font-size: 20px;
+}
+
+main {
+    margin-top: 80px; 
+    padding: 40px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 36px;
+    color: white;
+}
+
+.intro-text {
+    font-size: 18px;
+    color: #ddd;
+    margin-bottom: 40px;
+}
+
+.certificate-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.certificate-card {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    color: #333;
+}
+
+.certificate-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.certificate-card h2 {
+    font-size: 24px;
+    color: #007BFF;
+    margin-bottom: 10px;
+}
+
+.certificate-date {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 15px;
+}
+
+.certificate-description {
+    font-size: 16px;
+    color: #555;
+}
+
+.edit-btn {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.edit-btn:hover {
+    background-color: #0056b3;
+}
+
+
+.plus-button {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.plus-button img {
+    margin-top: 5px;
+    width: 60px;
+    height: 60px;
+}
+
+.upload-menu {
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease-in-out;
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    z-index: 1001;
+}
+
+.upload-menu.show-upload {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.upload-menu a {
+    display: block;
+    padding: 10px 15px;
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.3s;
+}
+
+.upload-menu a:hover {
+    background-color: #f2f2f2;
+}
+
+.plus-button:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s; 
+}
