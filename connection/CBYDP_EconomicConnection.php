@@ -17,9 +17,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $prepared_by_position = $_POST['prepared_by_position'];
         $approved_by_name = $_POST['approved_by_name'];
         $approved_by_position = $_POST['approved_by_position'];
+        $calendar_year = isset($_POST['calendar_year']) ? $_POST['calendar_year'] : date('Y');
 
         // Prepare SQL statement
         $sql = "INSERT INTO cbydp_pa_economic (
+            calendar_year,
             youth_development_concern, 
             objective, 
             performance_indicator, 
@@ -33,11 +35,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             prepared_by_position,
             approved_by_name,
             approved_by_position
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         if ($stmt = $conn->prepare($sql)) {
             // Bind parameters
-            if (!$stmt->bind_param("sssssssdsssss", 
+            if (!$stmt->bind_param("isssssssdsssss", 
+                $calendar_year,
                 $youth_development_concern,
                 $objective,
                 $performance_indicator,
