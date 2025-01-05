@@ -101,13 +101,16 @@
                     dataType: 'json',
                     success: function(response) {
                         if (response.status === 'success') {
+                            // Get parameters for PDF generation
                             const prepared_by_name = $('#prepared_by_name').val();
                             const prepared_by_position = $('#prepared_by_position').val();
                             const approved_by_name = $('#approved_by_name').val();
                             const approved_by_position = $('#approved_by_position').val();
 
+                            // Construct PDF URL
                             const pdfUrl = '../connection/pdf_cbydp_governance.php?' + 
-                                'prepared_by_name=' + encodeURIComponent(prepared_by_name) +
+                                'year=' + encodeURIComponent(new Date().getFullYear()) +
+                                '&prepared_by_name=' + encodeURIComponent(prepared_by_name) +
                                 '&prepared_by_position=' + encodeURIComponent(prepared_by_position) +
                                 '&approved_by_name=' + encodeURIComponent(approved_by_name) +
                                 '&approved_by_position=' + encodeURIComponent(approved_by_position);
@@ -162,4 +165,4 @@
         });
     </script>
 </body>
-</html> 
+</html>
