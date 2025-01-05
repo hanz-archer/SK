@@ -26,6 +26,7 @@
         <h1>CBYDP - Sports Development</h1>
 
         <form id="investment-plan-form" method="POST">
+            <input type="hidden" name="calendar_year" value="<?php echo date('Y'); ?>">
             <label for="youth_development_concern">Youth Development Concern:</label>
             <textarea id="youth_development_concern" name="youth_development_concern" required></textarea>
 

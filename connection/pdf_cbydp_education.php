@@ -2,6 +2,9 @@
 require('../libs/fpdf/fpdf.php');
 include('Connection.php');
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 class PDF extends FPDF {
     // Add MultiCell with height calculation
     function MultiCellHeight($w, $h, $txt, $border=0, $align='J') {

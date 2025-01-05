@@ -26,6 +26,7 @@
         <h1>CBYDP - Environment</h1>
 
         <form id="investment-plan-form" method="POST">
+            <input type="hidden" name="calendar_year" value="<?php echo date('Y'); ?>">
             <label for="youth_development_concern">Youth Development Concern:</label>
             <textarea id="youth_development_concern" name="youth_development_concern" required></textarea>
 
@@ -108,7 +109,8 @@
 
                             // Construct PDF URL
                             const pdfUrl = '../connection/pdf_cbydp_environment.php?' + 
-                                'prepared_by_name=' + encodeURIComponent(prepared_by_name) +
+                                'year=' + encodeURIComponent($('#calendar_year').val()) +
+                                '&prepared_by_name=' + encodeURIComponent(prepared_by_name) +
                                 '&prepared_by_position=' + encodeURIComponent(prepared_by_position) +
                                 '&approved_by_name=' + encodeURIComponent(approved_by_name) +
                                 '&approved_by_position=' + encodeURIComponent(approved_by_position);

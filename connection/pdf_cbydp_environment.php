@@ -1,9 +1,27 @@
-
 <?php
 require('../libs/fpdf/fpdf.php');
 include('Connection.php');
 
+// Add error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Debug received parameters
+error_log("Received parameters: " . print_r($_GET, true));
+
+if (!isset($_GET['year']) || !isset($_GET['prepared_by_name']) || !isset($_GET['approved_by_name'])) {
+    echo "Missing parameters";
+    exit;
+}
+
 class PDF extends FPDF {
+    private $headerYear;
+    
+    function __construct($year) {
+        parent::__construct();
+        $this->headerYear = $year;
+    }
+    
     // Add MultiCell with height calculation
     function MultiCellHeight($w, $h, $txt, $border=0, $align='J') {
         // Calculate height of text
@@ -100,7 +118,7 @@ class PDF extends FPDF {
         $this->SetFont('Arial', '', 11);
         $this->Cell(45, 5, 'Center of Participation:', 0, 0);
         $this->SetFont('Arial', 'B', 11);
-        $this->Cell(0, 5, 'EDUCATION', 0, 1);
+        $this->Cell(0, 5, 'ENVIRONMENT', 0, 1);
         
         // Agenda Statement
         $this->Ln(5);
@@ -137,42 +155,39 @@ class PDF extends FPDF {
 
     // Footer
     function Footer() {
-        $this->SetY(-50);
+        $this->SetY(-35);
         $this->SetFont('Arial', '', 10);
         
-        // Prepared by
         $this->Cell(95, 5, 'Prepared by:', 0, 0);
         $this->Cell(95, 5, 'Approved by:', 0, 1);
         
         $this->Ln(10);
         $this->SetFont('Arial', 'B', 10);
         
-        // Get the data from session or POST
-        if(isset($_GET['prepared_by_name']) && isset($_GET['approved_by_name'])) {
-            $prepared_by_name = strtoupper($_GET['prepared_by_name']);
-            $prepared_by_position = $_GET['prepared_by_position'];
-            $approved_by_name = strtoupper($_GET['approved_by_name']);
-            $approved_by_position = $_GET['approved_by_position'];
-            
-            $this->Cell(95, 5, $prepared_by_name, 0, 0, 'C');
-            $this->Cell(95, 5, $approved_by_name, 0, 1, 'C');
-            
-            $this->SetFont('Arial', '', 10);
-            $this->Cell(95, 5, $prepared_by_position, 0, 0, 'C');
-            $this->Cell(95, 5, $approved_by_position, 0, 1, 'C');
-        }
+        // Get the names and positions from GET parameters
+        $prepared_by_name = strtoupper($_GET['prepared_by_name']);
+        $prepared_by_position = $_GET['prepared_by_position'];
+        $approved_by_name = strtoupper($_GET['approved_by_name']);
+        $approved_by_position = $_GET['approved_by_position'];
+        
+        $this->Cell(95, 5, $prepared_by_name, 0, 0, 'C');
+        $this->Cell(95, 5, $approved_by_name, 0, 1, 'C');
+        
+        $this->SetFont('Arial', '', 10);
+        $this->Cell(95, 5, $prepared_by_position, 0, 0, 'C');
+        $this->Cell(95, 5, $approved_by_position, 0, 1, 'C');
     }
 }
 
-// Create PDF object with adjusted margins
-$pdf = new PDF();
+// Create PDF object with year parameter
+$pdf = new PDF($_GET['year']);
 $pdf->AddPage();
 $pdf->SetFont('Arial', '', 8);
 
 if(isset($_GET['year'])) {
     $year = $_GET['year'];
     
-    $sql = "SELECT * FROM cbydp_pa_education WHERE calendar_year = ?";
+    $sql = "SELECT * FROM cbydp_pa_environment WHERE calendar_year = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $year);
     $stmt->execute();
@@ -254,6 +269,6 @@ if(isset($_GET['year'])) {
     $stmt->close();
 }
 
-$pdf->Output('CBYDP_Education_Plan.pdf', 'I');
+$pdf->Output('CBYDP_Environment_Plan.pdf', 'I');
 ?>
 

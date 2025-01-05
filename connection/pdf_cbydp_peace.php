@@ -171,7 +171,7 @@ $pdf->SetFont('Arial', '', 8);
 if(isset($_GET['year'])) {
     $year = $_GET['year'];
     
-    $sql = "SELECT * FROM cbydp_pa_education WHERE calendar_year = ?";
+    $sql = "SELECT * FROM cbydp_pa_peace WHERE calendar_year = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $year);
     $stmt->execute();
