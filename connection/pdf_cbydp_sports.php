@@ -1,4 +1,3 @@
-
 <?php
 require('../libs/fpdf/fpdf.php');
 include('Connection.php');
