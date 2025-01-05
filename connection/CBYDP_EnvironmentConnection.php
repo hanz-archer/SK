@@ -1,15 +1,9 @@
 <?php
 include("Connection.php");
 
-// Ensure proper error handling
-error_reporting(E_ALL);
-ini_set('display_errors', 0); // Don't display errors to browser
-header('Content-Type: application/json'); // Always return JSON
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
         // Get form data
-        $calendar_year = isset($_POST['calendar_year']) ? intval($_POST['calendar_year']) : 0;
         $youth_development_concern = $_POST['youth_development_concern'];
         $objective = $_POST['objective'];
         $performance_indicator = $_POST['performance_indicator'];
@@ -17,12 +11,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $target_2025 = $_POST['target_2025'];
         $target_2026 = $_POST['target_2026'];
         $ppas = $_POST['ppas'];
-        $budget = floatval($_POST['budget']);
+        $budget = $_POST['budget'];
         $responsible_person = $_POST['responsible_person'];
         $prepared_by_name = $_POST['prepared_by_name'];
         $prepared_by_position = $_POST['prepared_by_position'];
         $approved_by_name = $_POST['approved_by_name'];
         $approved_by_position = $_POST['approved_by_position'];
+        $calendar_year = isset($_POST['calendar_year']) ? $_POST['calendar_year'] : date('Y');
 
         // Prepare SQL statement
         $sql = "INSERT INTO cbydp_pa_environment (
@@ -63,12 +58,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 throw new Exception("Binding parameters failed: " . $stmt->error);
             }
 
+            // Execute query
             if ($stmt->execute()) {
                 $pdf_url = "connection/pdf_cbydp_environment.php?year=" . urlencode($calendar_year) . 
                            "&prepared_by_name=" . urlencode($prepared_by_name) . 
                            "&prepared_by_position=" . urlencode($prepared_by_position) . 
                            "&approved_by_name=" . urlencode($approved_by_name) . 
                            "&approved_by_position=" . urlencode($approved_by_position);
+                           
+                error_log("Generated PDF URL: " . $pdf_url); // Debug log
                 
                 $response = array(
                     'status' => 'success',
@@ -93,9 +91,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 'received_data' => $_POST
             )
         );
-        echo json_encode($response);
     }
+
+    // Return JSON response
+    header('Content-Type: application/json');
+    echo json_encode($response);
 }
 
+// Close connection
 $conn->close();
 ?>

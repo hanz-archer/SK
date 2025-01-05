@@ -29,7 +29,7 @@ class PDF extends FPDF {
         return $lines * $h;
     }
 
-    function NbLines($w, $txt) {
+    function NbLines($w, $h, $txt) {
         // Compute number of lines a MultiCell will take
         $cw = &$this->CurrentFont['cw'];
         if($w==0)
@@ -155,9 +155,10 @@ class PDF extends FPDF {
 
     // Footer
     function Footer() {
-        $this->SetY(-35);
+        $this->SetY(-50);
         $this->SetFont('Arial', '', 10);
         
+        // Prepared by
         $this->Cell(95, 5, 'Prepared by:', 0, 0);
         $this->Cell(95, 5, 'Approved by:', 0, 1);
         
@@ -179,7 +180,7 @@ class PDF extends FPDF {
     }
 }
 
-// Create PDF object with year parameter
+// Create PDF object with adjusted margins
 $pdf = new PDF($_GET['year']);
 $pdf->AddPage();
 $pdf->SetFont('Arial', '', 8);
