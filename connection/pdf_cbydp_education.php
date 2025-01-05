@@ -1,6 +1,6 @@
 <?php
 require('../libs/fpdf/fpdf.php');
-include('../connection/Connection.php');
+include('Connection.php');
 
 class PDF extends FPDF {
     // Add MultiCell with height calculation
@@ -56,6 +56,19 @@ class PDF extends FPDF {
         return $nl;
     }
 
+    // Add new function for table cells with consistent height
+    function MultiCellTable($w, $h, $txt, $border=1, $align='L') {
+        // Store current position
+        $x = $this->GetX();
+        $y = $this->GetY();
+        
+        // Output the cell
+        $this->MultiCell($w, $h/max(1, substr_count($txt, "\n")+1), $txt, $border, $align);
+        
+        // Reset position to right of cell
+        $this->SetXY($x + $w, $y);
+    }
+
     // Rest of your Header and Footer functions remain the same
     function Header() {
         // Logos
@@ -97,20 +110,20 @@ class PDF extends FPDF {
         
         // Table Header
         $this->Ln(5);
-        $this->SetFont('Arial', 'B', 8);
+        $this->SetFont('Arial', 'B', 6);
         
         // Adjusted column widths to fit within page width (190mm with margins)
-        $col_widths = array(40, 30, 35, 39, 35, 30);
+        $col_widths = array(40, 25, 30, 45, 30, 20);
         
-        // First row headers
-        $this->Cell($col_widths[0], 10, 'YOUTH DEVELOPMENT CONCERN', 1, 0, 'C');
-        $this->Cell($col_widths[1], 10, 'OBJECTIVE', 1, 0, 'C');
-        $this->Cell($col_widths[2], 10, 'PERFORMANCE INDICATOR', 1, 0, 'C');
-        $this->Cell($col_widths[3], 5, 'TARGET', 'TLR', 0, 'C');
-        $this->Cell($col_widths[4], 10, 'PPAs', 1, 0, 'C');
-        $this->Cell($col_widths[5], 10, 'BUDGET', 1, 1, 'C');
+        // First row headers with text wrapping
+        $this->Cell($col_widths[0], 10, "YOUTH\nDEVELOPMENT\nCONCERN", 1, 0, 'C');
+        $this->Cell($col_widths[1], 10, "OBJECTIVE", 1, 0, 'C');
+        $this->Cell($col_widths[2], 10, "PERFORMANCE\nINDICATOR", 1, 0, 'C');
+        $this->Cell($col_widths[3], 5, "TARGET", 'TLR', 0, 'C');
+        $this->Cell($col_widths[4], 10, "PPAs", 1, 0, 'C');
+        $this->Cell($col_widths[5], 10, "BUDGET", 1, 1, 'C');
 
-        // TARGET years
+        // TARGET years (increased individual year width)
         $year_width = $col_widths[3] / 3;
         $current_x = $this->GetX() + $col_widths[0] + $col_widths[1] + $col_widths[2];
         $current_y = $this->GetY() - 5;
@@ -165,83 +178,75 @@ if(isset($_GET['year'])) {
     $result = $stmt->get_result();
     
     // Use same adjusted column widths
-    $col_widths = array(40, 30, 35, 39, 35, 30);
+    $col_widths = array(40, 25, 30, 45, 30, 20);
     
     while($row = $result->fetch_assoc()) {
-        $start_x = $pdf->GetX();
         $start_y = $pdf->GetY();
         
-        // Format and wrap text with stricter width limits
-        $txt_concern = wordwrap($row['youth_development_concern'], 20, "\n", true);
-        $txt_objective = wordwrap($row['objective'], 15, "\n", true);
-        $txt_indicator = wordwrap($row['performance_indicator'], 15, "\n", true);
-        $txt_ppas = wordwrap($row['ppas'], 20, "\n", true);
-        
-        // Format target cells with word wrap
-        $target_2024 = wordwrap($row['target_2024'] . ' students', 8, "\n", true);
-        $target_2025 = wordwrap($row['target_2025'] . ' students', 8, "\n", true);
-        $target_2026 = wordwrap($row['target_2026'] . ' students', 8, "\n", true);
-        
-        // Calculate heights
-        $line_height = 5;
+        // Calculate heights needed for each cell content
         $heights = array();
-        $heights[] = count(explode("\n", $txt_concern)) * $line_height;
-        $heights[] = count(explode("\n", $txt_objective)) * $line_height;
-        $heights[] = count(explode("\n", $txt_indicator)) * $line_height;
-        $heights[] = count(explode("\n", $txt_ppas)) * $line_height;
-        $heights[] = count(explode("\n", $target_2024)) * $line_height;
-        $heights[] = count(explode("\n", $target_2025)) * $line_height;
-        $heights[] = count(explode("\n", $target_2026)) * $line_height;
-        $heights[] = 10; // Minimum height
+        $line_height = 5;
         
-        $max_height = max($heights);
+        // Format and wrap text
+        $txt_concern = wordwrap($row['youth_development_concern'], 15, "\n", true);
+        $txt_objective = wordwrap($row['objective'], 12, "\n", true);
+        $txt_indicator = wordwrap($row['performance_indicator'], 12, "\n", true);
+        $txt_ppas = wordwrap($row['ppas'], 15, "\n", true);
+        $target_2024 = $row['target_2024'];
+        $target_2025 = $row['target_2025'];
+        $target_2026 = $row['target_2026'];
         
-        // Check for page break
-        if ($start_y + $max_height > 250) {
+        // Calculate heights for each cell
+        $heights = array();
+        $line_height = 5;
+        
+        // Calculate the number of lines for each cell
+        $concern_lines = substr_count($txt_concern, "\n") + 1;
+        $objective_lines = substr_count($txt_objective, "\n") + 1;
+        $indicator_lines = substr_count($txt_indicator, "\n") + 1;
+        $ppas_lines = substr_count($txt_ppas, "\n") + 1;
+        
+        // Get the maximum number of lines
+        $max_lines = max($concern_lines, $objective_lines, $indicator_lines, $ppas_lines, 2); // minimum 2 lines
+        
+        // Set the height for all cells based on the maximum lines
+        $max_height = $max_lines * $line_height;
+        
+        // Check if we need a new page
+        if($pdf->GetY() + $max_height > $pdf->GetPageHeight() - 60) {
             $pdf->AddPage();
             $start_y = $pdf->GetY();
         }
         
-        // Reset X position
-        $current_x = $start_x;
-        
-        // Youth Development Concern
-        $pdf->SetXY($current_x, $start_y);
-        $pdf->MultiCell($col_widths[0], $max_height, $txt_concern, 1, 'L');
-        $current_x += $col_widths[0];
-        
-        // Objective
-        $pdf->SetXY($current_x, $start_y);
-        $pdf->MultiCell($col_widths[1], $max_height, $txt_objective, 1, 'L');
-        $current_x += $col_widths[1];
-        
-        // Performance Indicator
-        $pdf->SetXY($current_x, $start_y);
-        $pdf->MultiCell($col_widths[2], $max_height, $txt_indicator, 1, 'L');
-        $current_x += $col_widths[2];
-        
-        // TARGET cells with word wrap
+        // Output cells with consistent height
+        $current_x = $pdf->GetX();
         $year_width = $col_widths[3] / 3;
-        $pdf->SetXY($current_x, $start_y);
-        $pdf->MultiCell($year_width, $max_height/2, $target_2024, 1, 'C');
-        $pdf->SetXY($current_x + $year_width, $start_y);
-        $pdf->MultiCell($year_width, $max_height/2, $target_2025, 1, 'C');
-        $pdf->SetXY($current_x + (2 * $year_width), $start_y);
-        $pdf->MultiCell($year_width, $max_height/2, $target_2026, 1, 'C');
-        $current_x += $col_widths[3];
         
-        // PPAs
         $pdf->SetXY($current_x, $start_y);
-        $pdf->MultiCell($col_widths[4], $max_height, $txt_ppas, 1, 'L');
-        $current_x += $col_widths[4];
+        $pdf->MultiCellTable($col_widths[0], $max_height, $txt_concern);
         
-        // Budget (ensure it's visible)
-        $pdf->SetXY($current_x, $start_y);
-        $budget_amount = '₱' . number_format($row['budget'], 2);
-        // Split budget text into two lines with proper spacing
-        $pdf->MultiCell($col_widths[5], $max_height/2, $budget_amount . "\n\nEvery year", 1, 'R');
+        $pdf->SetXY($current_x + $col_widths[0], $start_y);
+        $pdf->MultiCellTable($col_widths[1], $max_height, $txt_objective);
         
-        // Move to next row with proper spacing
+        $pdf->SetXY($current_x + $col_widths[0] + $col_widths[1], $start_y);
+        $pdf->MultiCellTable($col_widths[2], $max_height, $txt_indicator);
+        
+        // Target years
+        $target_x = $current_x + $col_widths[0] + $col_widths[1] + $col_widths[2];
+        $pdf->SetXY($target_x, $start_y);
+        $pdf->MultiCellTable($year_width, $max_height, $target_2024);
+        $pdf->SetXY($target_x + $year_width, $start_y);
+        $pdf->MultiCellTable($year_width, $max_height, $target_2025);
+        $pdf->SetXY($target_x + (2 * $year_width), $start_y);
+        $pdf->MultiCellTable($year_width, $max_height, $target_2026);
+        
+        $pdf->SetXY($target_x + $col_widths[3], $start_y);
+        $pdf->MultiCellTable($col_widths[4], $max_height, $txt_ppas);
+        
+        $pdf->SetXY($target_x + $col_widths[3] + $col_widths[4], $start_y);
+        $pdf->MultiCellTable($col_widths[5], $max_height, '₱' . number_format($row['budget'], 2) . "\nEvery year");
+        
+        // Move to next row
         $pdf->SetY($start_y + $max_height);
     }
     
@@ -250,3 +255,4 @@ if(isset($_GET['year'])) {
 
 $pdf->Output('CBYDP_Education_Plan.pdf', 'I');
 ?>
+
