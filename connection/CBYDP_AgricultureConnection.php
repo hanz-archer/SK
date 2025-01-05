@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         if ($stmt = $conn->prepare($sql)) {
-            // Bind parameters
+            // Bind parameters - make sure the types match the number of parameters
             if (!$stmt->bind_param("isssssssdsssss", 
                 $calendar_year,
                 $youth_development_concern,
@@ -59,14 +59,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
 
             // Execute query
-            if (!$stmt->execute()) {
+            if ($stmt->execute()) {
+                $pdf_url = "connection/pdf_cdydp_agri.php?year=" . urlencode($calendar_year) . 
+                           "&prepared_by_name=" . urlencode($prepared_by_name) . 
+                           "&prepared_by_position=" . urlencode($prepared_by_position) . 
+                           "&approved_by_name=" . urlencode($approved_by_name) . 
+                           "&approved_by_position=" . urlencode($approved_by_position);
+                           
+                error_log("Generated PDF URL: " . $pdf_url); // Debug log
+                
+                $response = array(
+                    'status' => 'success',
+                    'message' => 'Data saved successfully',
+                    'pdf_url' => $pdf_url
+                );
+                echo json_encode($response);
+                exit;
+            } else {
                 throw new Exception("Execution failed: " . $stmt->error);
             }
-
-            $response = array(
-                'status' => 'success',
-                'message' => 'Record added successfully!'
-            );
 
             $stmt->close();
         } else {
@@ -89,4 +100,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 // Close connection
 $conn->close();
-?> 
+?>

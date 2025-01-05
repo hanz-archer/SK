@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comprehensive Barangay Youth Development Plan - Peace Building</title>
+    <title>Comprehensive Barangay Youth Development Plan - Peace</title>
     <link rel="stylesheet" href="../css/ABYIP.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -14,7 +14,7 @@
             <a href="../admin/AdminHP.php">
                 <img src="../images/SK_Logo.png" alt="SK Logo">
             </a>
-            <span class="logo-text">SK Sumaguan - Post CBYDP Peace Building and Security</span>
+            <span class="logo-text">SK Sumaguan - Post CBYDP Peace</span>
         </div>
         <nav class="nav-links">
             <a href="../admin/AdminHP.php" class="nav-item">Home</a>
@@ -23,7 +23,7 @@
     </header>
 
     <div class="form-container">
-        <h1>CBYDP - Peace Building and Security</h1>
+        <h1>CBYDP - Peace</h1>
 
         <form id="investment-plan-form" method="POST">
             <input type="hidden" name="calendar_year" value="<?php echo date('Y'); ?>">
@@ -101,13 +101,16 @@
                     dataType: 'json',
                     success: function(response) {
                         if (response.status === 'success') {
+                            // Get parameters for PDF generation
                             const prepared_by_name = $('#prepared_by_name').val();
                             const prepared_by_position = $('#prepared_by_position').val();
                             const approved_by_name = $('#approved_by_name').val();
                             const approved_by_position = $('#approved_by_position').val();
 
+                            // Construct PDF URL
                             const pdfUrl = '../connection/pdf_cbydp_peace.php?' + 
-                                'prepared_by_name=' + encodeURIComponent(prepared_by_name) +
+                                'year=' + encodeURIComponent(new Date().getFullYear()) +
+                                '&prepared_by_name=' + encodeURIComponent(prepared_by_name) +
                                 '&prepared_by_position=' + encodeURIComponent(prepared_by_position) +
                                 '&approved_by_name=' + encodeURIComponent(approved_by_name) +
                                 '&approved_by_position=' + encodeURIComponent(approved_by_position);
