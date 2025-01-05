@@ -16,9 +16,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $prepared_by_position = $_POST['prepared_by_position'];
     $approved_by_name = $_POST['approved_by_name'];
     $approved_by_position = $_POST['approved_by_position'];
+    $calendar_year = isset($_POST['calendar_year']) ? $_POST['calendar_year'] : date('Y');
 
     // Prepare SQL statement
-    $sql = "INSERT INTO cbydp_pa_health (
+    $sql = "INSERT INTO cbydp_pa_education (
+        calendar_year,
         youth_development_concern, 
         objective, 
         performance_indicator, 
@@ -32,11 +34,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         prepared_by_position,
         approved_by_name,
         approved_by_position
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     // Prepare and bind parameters
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssssssdsssss", 
+    $stmt->bind_param("isssssssdsssss", 
+        $calendar_year,
         $youth_development_concern,
         $objective,
         $performance_indicator,
@@ -75,4 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 // Close connection
 $conn->close();
+
+// Get the calendar year from the form or set it to current year
+$calendar_year = isset($_POST['calendar_year']) ? $_POST['calendar_year'] : date('Y');
 ?>

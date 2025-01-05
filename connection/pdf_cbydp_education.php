@@ -1,26 +1,62 @@
 <?php
 require('../libs/fpdf/fpdf.php');
-include("Connection.php");
+include('../connection/Connection.php');
 
 class PDF extends FPDF {
-    function __construct() {
-        // Adjust margins to fit all columns
-        parent::__construct('P', 'mm', 'A4');
-        $this->SetMargins(10, 10, 10); // Left, Top, Right margins
+    // Add MultiCell with height calculation
+    function MultiCellHeight($w, $h, $txt, $border=0, $align='J') {
+        // Calculate height of text
+        $lines = $this->NbLines($w, $txt);
+        return $lines * $h;
     }
 
-    // Calculate wrapped cell height
-    function GetMultiCellHeight($w, $txt) {
-        $height = 5;
-        $startX = $this->GetX();
-        $startY = $this->GetY();
-        $this->MultiCell($w, 5, $txt);
-        $endY = $this->GetY();
-        $this->SetXY($startX, $startY);
-        return $endY - $startY;
+    function NbLines($w, $txt) {
+        // Compute number of lines a MultiCell will take
+        $cw = &$this->CurrentFont['cw'];
+        if($w==0)
+            $w = $this->w-$this->rMargin-$this->x;
+        $wmax = ($w-2*$this->cMargin)*1000/$this->FontSize;
+        $s = str_replace("\r",'',$txt);
+        $nb = strlen($s);
+        if($nb>0 && $s[$nb-1]=="\n")
+            $nb--;
+        $sep = -1;
+        $i = 0;
+        $j = 0;
+        $l = 0;
+        $nl = 1;
+        while($i<$nb) {
+            $c = $s[$i];
+            if($c=="\n") {
+                $i++;
+                $sep = -1;
+                $j = $i;
+                $l = 0;
+                $nl++;
+                continue;
+            }
+            if($c==' ')
+                $sep = $i;
+            $l += $cw[$c];
+            if($l>$wmax) {
+                if($sep==-1) {
+                    if($i==$j)
+                        $i++;
+                }
+                else
+                    $i = $sep+1;
+                $sep = -1;
+                $j = $i;
+                $l = 0;
+                $nl++;
+            }
+            else
+                $i++;
+        }
+        return $nl;
     }
 
-    // Header
+    // Rest of your Header and Footer functions remain the same
     function Header() {
         // Logos
         $this->Image('../images/SK.png', 20, 10, 25);
