@@ -125,7 +125,7 @@ class PDF extends FPDF {
         $this->SetFont('Arial', '', 11);
         $this->Cell(35, 5, 'Agenda Statement:', 0, 0);
         $this->SetFont('Arial', '', 10);
-        $this->MultiCell(0, 5, 'For the youth to participate in accessible, developmental, quality, and relevant formal, non-formal and informal lifelong learning and training that prepares graduates to be globally competitive but responsive to national needs and to prepare them for the workplace and the emergence of new media and other technologies.');
+        $this->MultiCell(0, 5, 'For the youth to participate in a peaceful and just society that affords them with equal and equitable opportunity, social security and protection in all aspects of development, regardless of their gender, disability, specific needs, political beliefs, ethnicity, religion, socio-cultural economic status.');
         
         // Table Header
         $this->Ln(5);
