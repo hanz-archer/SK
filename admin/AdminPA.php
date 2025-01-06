@@ -114,13 +114,13 @@ include("../connection/Connection.php");
                 <a href="../post/ABYIP_Education.php">Post Education</a>
                 <a href="../post/ABYIP_Health.php">Post Health</a>
                 <a href="../post/ABYIP_Environment.php">Post Environment</a>
-                <a href="../post/ABYIP_Social.php">Post Social Inclusion and Equity</a>
-                <a href="../post/ABYIP_Citizenship.php">Post Active Citizenship</a>
-                <a href="../post/ABYIP_Economic.php">Post Economic Empowerment</a>
-                <a href="../post/ABYIP_Peace.php">Post Peace Building and Security</a>
+                <a href="../post/ABYIP_SIE.php">Post Social Inclusion and Equity</a>
+                <a href="../post/ABYIP_AC.php">Post Active Citizenship</a>
+                <a href="../post/ABYIP_EE.php">Post Economic Empowerment</a>
+                <a href="../post/ABYIP_PBS.php">Post Peace Building and Security</a>
                 <a href="../post/ABYIP_Agriculture.php">Post Agriculture</a>
                 <a href="../post/ABYIP_Sports.php">Post Sports Development</a>
-                <a href="../post/ABYIP_General.php">Post General Administration</a>
+                <a href="../post/ABYIP_GAP.php">Post General Administration</a>
             </div>
 
                         

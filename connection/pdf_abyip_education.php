@@ -16,7 +16,7 @@ if (empty($table) || $year <= 0 || empty($month)) {
     exit;
 }
 
-$allowed_tables = ['abyip_health'];
+$allowed_tables = ['abyip_education'];
 if (!in_array($table, $allowed_tables)) {
     echo "Invalid table specified.";
     exit;
@@ -87,8 +87,8 @@ class PDF extends FPDF
         $this->SetX(169);
         $this->Cell(0, 10, 'CENTER OF PARTICIPATION: ', 0, 0, 'L');
         $this->SetFont('Arial', 'B', 11);
-        $this->SetX(60);
-        $this->Cell(0, 10, 'HEALTH', 0, 1, 'C');
+        $this->SetX(65);
+        $this->Cell(0, 10, 'EDUCATION', 0, 1, 'C');
     }
     function Footer()
     {
@@ -276,7 +276,7 @@ foreach ($data_entries as $data) {
     $pdf->Ln($dynamicHeight);
 }
 
-$pdf->Output('I', 'Health_' . $year . '_' . $month . '.pdf');
+$pdf->Output('I', 'Education_' . $year . '_' . $month . '.pdf');
 
 ?>
 

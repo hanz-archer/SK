@@ -28,7 +28,7 @@
         <form id="investment-plan-form" method="POST">
 
             <label for="calendar_year">Calendar Year:</label>
-            <input type="number" id="calendar_year" class="calendar_year" min="2000" max="2100" required>
+            <input type="number" id="calendar_year" name="calendar_year" class="calendar_year" min="2000" max="2100" required>
 
             <label for="reference_code">Reference Code:</label>
             <input type="text" id="reference_code" name="reference_code">
@@ -63,13 +63,13 @@
             </select>
 
             <label for="mooe">MOOE:</label>
-            <input type="number" id="mooe" class="mooe" required>
+            <input type="number" id="mooe" name="mooe" class="mooe" required>
 
             <label for="co">CO:</label>
-            <input type="text" id="co" class="co">
+            <input type="number" id="co" name="co" class="co" required>
 
-            <label for="total">Total</label>
-            <input type="text" id="total" class="total" required>
+            <label for="total">Total:</label>
+            <input type="number" id="total" name="total" class="total" required>
 
             <label for="person_responsible">Person Responsible:</label>
             <input type="text" id="person_responsible" name="person_responsible" required>
@@ -103,52 +103,75 @@
     </div>
 
     <script>
-        $('#investment-plan-form').on('submit', function(e) {
-            e.preventDefault();
+        $(document).ready(function() {
+            // Add input event listeners to MOOE and CO fields
+            $('#mooe, #co').on('input', function() {
+                calculateTotal();
+            });
 
-            Swal.fire({
-                title: 'Confirm Submission',
-                text: "Are you sure you want to submit?",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, submit it!',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '../connection/ABYIP_EducationConnection.php',
-                        type: 'POST',
-                        data: $(this).serialize(),
-                        dataType: 'json',
-                        success: function(response) {
-                            console.log(response);  
-                            if(response.status === 'success') {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Success!',
-                                    text: response.message
-                                }).then(() => {
-                                    window.location.href = '../admin/AdminPA.php';
-                                });
-                            } else {
+            function calculateTotal() {
+                const mooe = parseFloat($('#mooe').val()) || 0;
+                const co = parseFloat($('#co').val()) || 0;
+                const total = mooe + co;
+                $('#total').val(total);
+            }
+
+            // Existing form submission code...
+            $('#investment-plan-form').on('submit', function(e) {
+                e.preventDefault();
+
+                Swal.fire({
+                    title: 'Confirm Submission',
+                    text: "Are you sure you want to submit?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, submit it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '../connection/ABYIP_HealthConnection.php',
+                            type: 'POST',
+                            data: $(this).serialize(),
+                            dataType: 'json',
+                            success: function(response) {
+                                if(response.status === 'success') {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Success!',
+                                        text: response.message,
+                                        showCancelButton: true,
+                                        confirmButtonText: 'Download PDF',
+                                        cancelButtonText: 'Close'
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            // Open PDF in new window
+                                            window.open(response.pdf_url, '_blank');
+                                        }
+                                        // Redirect after a short delay
+                                        setTimeout(() => {
+                                            window.location.href = '../admin/AdminPA.php';
+                                        }, 1000);
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error!',
+                                        text: response.message
+                                    });
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.log(xhr.responseText);
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Error!',
-                                    text: response.message
+                                    text: 'Something went wrong. Please try again.'
                                 });
                             }
-                        },
-                        error: function(xhr, status, error) {
-                            console.log(xhr.responseText); 
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error!',
-                                text: 'Something went wrong. Please try again.'
-                            });
-                        }
-                    });
-
-                }
+                        });
+                    }
+                });
             });
         });
     </script>

@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $approved_by_position = mysqli_real_escape_string($conn, $_POST['approved_by_position']);
 
     // SQL Insert query
-    $sql = "INSERT INTO abyip_pbs (
+    $sql = "INSERT INTO abyip_ee (
         calendar_year, reference_code, ppas, description, expected_result, 
         performance_indicator, period_of_implementation, mooe, co, total, 
         person_responsible, prepared_by_name, prepared_by_position, 
@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($stmt->execute()) {
         // Generate PDF URL
-        $pdf_url = "../connection/pdf_abyip_pbs.php?table=abyip_pbs&year=" . urlencode($calendar_year) . "&month=" . urlencode($period_of_implementation);
+        $pdf_url = "../connection/pdf_abyip_ee.php?table=abyip_ee&year=" . urlencode($calendar_year) . "&month=" . urlencode($period_of_implementation);
         
         echo json_encode([
             'status' => 'success',

@@ -14,7 +14,7 @@
             <a href="../admin/AdminHP.php">
                 <img src="../images/SK_Logo.png" alt="SK Logo">
             </a>
-            <span class="logo-text">SK Sumaguan - Post ABYIP Health</span>
+            <span class="logo-text">SK Sumaguan - Post ABYIP Environment</span>
         </div>
         <nav class="nav-links">
             <a href="../admin/AdminHP.php" class="nav-item">Home</a>
@@ -23,7 +23,7 @@
     </header>
 
     <div class="form-container">
-        <h1>ABYIP - Health</h1>
+        <h1>ABYIP - Environment</h1>
 
         <form id="investment-plan-form" method="POST">
 
@@ -130,7 +130,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: '../connection/ABYIP_HealthConnection.php',
+                            url: '../connection/ABYIP_EnvironmentConnection.php',
                             type: 'POST',
                             data: $(this).serialize(),
                             dataType: 'json',
