@@ -26,8 +26,8 @@
         <h1>CBYDP - Economic</h1>
 
         <form id="investment-plan-form" method="POST">
-            <input type="hidden" name="calendar_year" value="<?php echo date('Y'); ?>">
-            <label for="youth_development_concern">Youth Development Concern:</label>
+        <label for="calendar_year">Calendar Year:</label>
+        <input type="number" id="calendar_year" name="calendar_year" class="calendar_year" min="2000" max="2100" required>            <label for="youth_development_concern">Youth Development Concern:</label>
             <textarea id="youth_development_concern" name="youth_development_concern" required></textarea>
 
             <label for="objective">Objective:</label>
