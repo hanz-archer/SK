@@ -252,7 +252,7 @@ function handleYearSelection(selectElement, category) {
         'Active Citizenship': 'citizenship',
         'Economic Empowerment': 'economic',
         'Peace Building and Security': 'peace',
-        'Agriculture': 'agriculture',
+        'Agriculture': 'agri',
         'Sports Development': 'sports',
         'Governance': 'governance',
         'General Administration': 'general'

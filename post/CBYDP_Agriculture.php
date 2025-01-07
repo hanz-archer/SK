@@ -108,7 +108,7 @@
                             const approved_by_position = $('#approved_by_position').val();
 
                             // Construct PDF URL
-                            const pdfUrl = '../connection/pdf_cdydp_agri.php?' + 
+                            const pdfUrl = '../connection/pdf_cbydp_agri.php?' + 
                                 'year=' + encodeURIComponent(new Date().getFullYear()) +
                                 '&prepared_by_name=' + encodeURIComponent(prepared_by_name) +
                                 '&prepared_by_position=' + encodeURIComponent(prepared_by_position) +

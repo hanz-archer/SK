@@ -2,26 +2,10 @@
 require('../libs/fpdf/fpdf.php');
 include('Connection.php');
 
-// Add error reporting for debugging
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Debug received parameters
-error_log("Received parameters: " . print_r($_GET, true));
-
-if (!isset($_GET['year']) || !isset($_GET['prepared_by_name']) || !isset($_GET['approved_by_name'])) {
-    echo "Missing parameters";
-    exit;
-}
-
 class PDF extends FPDF {
-    private $headerYear;
-    
-    function __construct($year) {
-        parent::__construct();
-        $this->headerYear = $year;
-    }
-    
     // Add MultiCell with height calculation
     function MultiCellHeight($w, $h, $txt, $border=0, $align='J') {
         // Calculate height of text
@@ -29,7 +13,7 @@ class PDF extends FPDF {
         return $lines * $h;
     }
 
-    function NbLines($w, $h, $txt) {
+    function NbLines($w, $txt) {
         // Compute number of lines a MultiCell will take
         $cw = &$this->CurrentFont['cw'];
         if($w==0)
@@ -125,7 +109,7 @@ class PDF extends FPDF {
         $this->SetFont('Arial', '', 11);
         $this->Cell(35, 5, 'Agenda Statement:', 0, 0);
         $this->SetFont('Arial', '', 10);
-        $this->MultiCell(0, 5, 'For the youth to participate in promoting human security, including public safety and order, protecting the youth in conflict areas, safeguarding territorial integrity and sovereignty, and in contributing to national peace and unity.');
+        $this->MultiCell(0, 5, 'For the youth to participate in accessible, developmental, quality, and relevant formal, non-formal and informal lifelong learning and training that prepares graduates to be globally competitive but responsive to national needs and to prepare them for the workplace and the emergence of new media and other technologies.');
         
         // Table Header
         $this->Ln(5);
@@ -165,25 +149,39 @@ class PDF extends FPDF {
         $this->Ln(10);
         $this->SetFont('Arial', 'B', 10);
         
-        // Get the names and positions from GET parameters
-        $prepared_by_name = strtoupper($_GET['prepared_by_name']);
-        $prepared_by_position = $_GET['prepared_by_position'];
-        $approved_by_name = strtoupper($_GET['approved_by_name']);
-        $approved_by_position = $_GET['approved_by_position'];
-        
-        $this->Cell(95, 5, $prepared_by_name, 0, 0, 'C');
-        $this->Cell(95, 5, $approved_by_name, 0, 1, 'C');
-        
-        $this->SetFont('Arial', '', 10);
-        $this->Cell(95, 5, $prepared_by_position, 0, 0, 'C');
-        $this->Cell(95, 5, $approved_by_position, 0, 1, 'C');
+        // Get the data from session or POST
+        if(isset($_GET['prepared_by_name']) && isset($_GET['approved_by_name'])) {
+            $prepared_by_name = strtoupper($_GET['prepared_by_name']);
+            $prepared_by_position = $_GET['prepared_by_position'];
+            $approved_by_name = strtoupper($_GET['approved_by_name']);
+            $approved_by_position = $_GET['approved_by_position'];
+            
+            $this->Cell(95, 5, $prepared_by_name, 0, 0, 'C');
+            $this->Cell(95, 5, $approved_by_name, 0, 1, 'C');
+            
+            $this->SetFont('Arial', '', 10);
+            $this->Cell(95, 5, $prepared_by_position, 0, 0, 'C');
+            $this->Cell(95, 5, $approved_by_position, 0, 1, 'C');
+        }
     }
 }
 
 // Create PDF object with adjusted margins
-$pdf = new PDF($_GET['year']);
+$pdf = new PDF();
 $pdf->AddPage();
 $pdf->SetFont('Arial', '', 8);
+
+// Validate required parameters
+$year = isset($_GET['year']) ? intval($_GET['year']) : null;
+$prepared_by_name = isset($_GET['prepared_by_name']) ? htmlspecialchars($_GET['prepared_by_name']) : null;
+$prepared_by_position = isset($_GET['prepared_by_position']) ? htmlspecialchars($_GET['prepared_by_position']) : null;
+$approved_by_name = isset($_GET['approved_by_name']) ? htmlspecialchars($_GET['approved_by_name']) : null;
+$approved_by_position = isset($_GET['approved_by_position']) ? htmlspecialchars($_GET['approved_by_position']) : null;
+
+// Check for missing required parameters
+if (!$year) {
+    die('Year parameter is required');
+}
 
 if(isset($_GET['year'])) {
     $year = $_GET['year'];
@@ -193,6 +191,10 @@ if(isset($_GET['year'])) {
     $stmt->bind_param("i", $year);
     $stmt->execute();
     $result = $stmt->get_result();
+    
+    if ($result->num_rows === 0) {
+        die("No data found for year $year");
+    }
     
     // Use same adjusted column widths
     $col_widths = array(40, 25, 30, 45, 30, 20);
