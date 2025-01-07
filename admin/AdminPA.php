@@ -29,6 +29,11 @@ function getAvailableYears($category, $type) {
             case 'ac': $table = 'abyip_ac'; break;
             case 'ee': $table = 'abyip_ee'; break;
             case 'gap': $table = 'abyip_gap'; break;
+            case 'education': $table = 'abyip_education'; break;
+            case 'health': $table = 'abyip_health'; break;
+            case 'environment': $table = 'abyip_environment'; break;
+            case 'agriculture': $table = 'abyip_agriculture'; break;
+            case 'sports': $table = 'abyip_sports'; break;
             default: $table = "abyip_{$tableName}";
         }
     }
@@ -36,7 +41,9 @@ function getAvailableYears($category, $type) {
     $sql = "SELECT DISTINCT calendar_year FROM {$table} ORDER BY calendar_year DESC";
     
     try {
-        error_log("Querying table: " . $table); // Debug log
+        error_log("Type: " . $type); // Debug log
+        error_log("Category: " . $category); // Debug log
+        error_log("Table name: " . $table); // Debug log
         error_log("SQL Query: " . $sql); // Debug log
         
         $result = $conn->query($sql);
@@ -182,14 +189,21 @@ function generateYearOptions() {
                 ];
 
                 foreach ($categories as $category => $description) {
+                    // Convert category name to database-friendly format
+                    $categorySlug = strtolower(str_replace(' ', '_', $category));
+                    
+                    // Get years for ABYIP
+                    $abyipYears = getAvailableYears($categorySlug, 'abyip');
+                    
                     echo "
                     <div class='category-card' onclick='showYearSelector(\"$category\", this)'>
                         <h3>$category</h3>
                         <p>$description</p>
-                        <div class='year-selector' style='display: none;'>
+                        <div class='year-selector' style='display: none;' 
+                             data-abyip-years='" . htmlspecialchars(json_encode($abyipYears)) . "'>
+                            <button class='close-selector' onclick='closeYearSelector(event, this)'>×</button>
                             <select class='year-dropdown' onchange='handleYearSelection(this, \"$category\")'>
                                 <option value=''>Select Year</option>
-                                " . generateYearOptions() . "
                             </select>
                         </div>
                     </div>
