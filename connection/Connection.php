@@ -8,7 +8,8 @@
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
     // Create connection
-    $conn = mysqli_connect($servername, $username, $password, $dbname);
+    $conn = mysqli_connect('localhost', 'root', '', 'skdb');
+
 
     // Check connection
     if (!$conn) {

@@ -2,34 +2,27 @@
 require('../libs/fpdf/fpdf.php');
 include("../connection/Connection.php");
 
-if (!isset($_GET['table']) || !isset($_GET['year']) || !isset($_GET['month'])) {
-    echo "Missing parameters.";
+if (!isset($_GET['year'])) {
+    echo "Missing year parameter.";
     exit;
 }
 
-$table = preg_replace('/[^a-zA-Z_]/', '', $_GET['table']);
 $year = intval($_GET['year']);
-$month = preg_replace('/[^a-zA-Z]/', '', $_GET['month']);
 
-if (empty($table) || $year <= 0 || empty($month)) {
-    echo "Invalid parameters.";
+if ($year <= 0) {
+    echo "Invalid year parameter.";
     exit;
 }
 
-$allowed_tables = ['abyip_education'];
-if (!in_array($table, $allowed_tables)) {
-    echo "Invalid table specified.";
-    exit;
-}
-
-$query = "SELECT * FROM $table WHERE calendar_year = ? AND period_of_implementation = ?";
+// Query to get all entries for the specified year
+$query = "SELECT * FROM abyip_education WHERE calendar_year = ?";
 $stmt = $conn->prepare($query);
-$stmt->bind_param('is', $year, $month);
+$stmt->bind_param('i', $year);
 $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows === 0) {
-    echo "No data found for the specified year and month.";
+    echo "No data found for the specified year.";
     exit;
 }
 
@@ -276,8 +269,7 @@ foreach ($data_entries as $data) {
     $pdf->Ln($dynamicHeight);
 }
 
-$pdf->Output('I', 'Education_' . $year . '_' . $month . '.pdf');
-
+$pdf->Output('I', 'ABYIP_Education_Plan.pdf');
 ?>
 
 

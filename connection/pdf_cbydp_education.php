@@ -171,6 +171,18 @@ $pdf = new PDF();
 $pdf->AddPage();
 $pdf->SetFont('Arial', '', 8);
 
+// Validate required parameters
+$year = isset($_GET['year']) ? intval($_GET['year']) : null;
+$prepared_by_name = isset($_GET['prepared_by_name']) ? htmlspecialchars($_GET['prepared_by_name']) : null;
+$prepared_by_position = isset($_GET['prepared_by_position']) ? htmlspecialchars($_GET['prepared_by_position']) : null;
+$approved_by_name = isset($_GET['approved_by_name']) ? htmlspecialchars($_GET['approved_by_name']) : null;
+$approved_by_position = isset($_GET['approved_by_position']) ? htmlspecialchars($_GET['approved_by_position']) : null;
+
+// Check for missing required parameters
+if (!$year) {
+    die('Year parameter is required');
+}
+
 if(isset($_GET['year'])) {
     $year = $_GET['year'];
     
@@ -179,6 +191,10 @@ if(isset($_GET['year'])) {
     $stmt->bind_param("i", $year);
     $stmt->execute();
     $result = $stmt->get_result();
+    
+    if ($result->num_rows === 0) {
+        die("No data found for year $year");
+    }
     
     // Use same adjusted column widths
     $col_widths = array(40, 25, 30, 45, 30, 20);

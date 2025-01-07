@@ -1,5 +1,14 @@
 <?php
 include("../connection/Connection.php");
+
+function generateYearOptions() {
+    $currentYear = date('Y');
+    $options = '';
+    for($year = $currentYear; $year >= 2000; $year--) {
+        $options .= "<option value='$year'>$year</option>";
+    }
+    return $options;
+}
 ?>
 
 <!DOCTYPE html>
@@ -52,9 +61,15 @@ include("../connection/Connection.php");
 
                 foreach ($categories as $category => $description) {
                     echo "
-                    <div class='category-card'>
+                    <div class='category-card' onclick='showYearSelector(\"$category\", this)'>
                         <h3>$category</h3>
                         <p>$description</p>
+                        <div class='year-selector' style='display: none;'>
+                            <select class='year-dropdown' onchange='handleYearSelection(this, \"$category\")'>
+                                <option value=''>Select Year</option>
+                                " . generateYearOptions() . "
+                            </select>
+                        </div>
                     </div>
                     ";
                 }
@@ -62,8 +77,8 @@ include("../connection/Connection.php");
             </div>
 
             <div id="uploadMenu" class="upload-menu" style="display: none;">
-            <a href="../post/CBYDP_Education.php">Post Education</a>
-            <a href="../post/CBYDP_Health.php">Post Health</a>
+                <a href="../post/CBYDP_Education.php">Post Education</a>
+                <a href="../post/CBYDP_Health.php">Post Health</a>
                 <a href="../post/CBYDP_Environment.php">Post Environment</a>
                 <a href="../post/CBYDP_Social.php">Post Social Inclusion and Equity</a>
                 <a href="../post/CBYDP_Citizenship.php">Post Active Citizenship</a>
@@ -101,9 +116,15 @@ include("../connection/Connection.php");
 
                 foreach ($categories as $category => $description) {
                     echo "
-                    <div class='category-card'>
+                    <div class='category-card' onclick='showYearSelector(\"$category\", this)'>
                         <h3>$category</h3>
                         <p>$description</p>
+                        <div class='year-selector' style='display: none;'>
+                            <select class='year-dropdown' onchange='handleYearSelection(this, \"$category\")'>
+                                <option value=''>Select Year</option>
+                                " . generateYearOptions() . "
+                            </select>
+                        </div>
                     </div>
                     ";
                 }
@@ -194,12 +215,105 @@ window.onclick = function(event) {
     }
 }
 
+function generateYearOptions() {
+    let currentYear = new Date().getFullYear();
+    let options = '';
+    for(let year = currentYear; year >= 2000; year--) {
+        options += `<option value="${year}">${year}</option>`;
+    }
+    return options;
+}
+
+function showYearSelector(category, element) {
+    // Hide all other year selectors first
+    document.querySelectorAll('.year-selector').forEach(selector => {
+        selector.style.display = 'none';
+    });
+    
+    // Show the clicked category's year selector
+    let yearSelector = element.querySelector('.year-selector');
+    yearSelector.style.display = 'block';
+}
+
+function handleYearSelection(selectElement, category) {
+    const year = selectElement.value;
+    if (!year) return;
+
+    // Determine which section is currently active
+    const isCBYDP = !document.getElementById('CBYDP').classList.contains('hidden');
+    const type = isCBYDP ? 'cbydp' : 'abyip';
+    
+    // Create a mapping object for categories to their URL slugs
+    const categoryMapping = {
+        'Education': 'education',
+        'Health': 'health',
+        'Environment': 'environment',
+        'Social Inclusion and Equity': 'social',
+        'Active Citizenship': 'citizenship',
+        'Economic Empowerment': 'economic',
+        'Peace Building and Security': 'peace',
+        'Agriculture': 'agriculture',
+        'Sports Development': 'sports',
+        'Governance': 'governance',
+        'General Administration': 'general'
+    };
+
+    // Get the URL slug for the category
+    const categorySlug = categoryMapping[category];
+    if (!categorySlug) {
+        console.error('Unknown category:', category);
+        return;
+    }
+
+    // Get the form values
+    const preparedByName = document.getElementById('prepared_by_name')?.value || '';
+    const preparedByPosition = document.getElementById('prepared_by_position')?.value || '';
+    const approvedByName = document.getElementById('approved_by_name')?.value || '';
+    const approvedByPosition = document.getElementById('approved_by_position')?.value || '';
+
+    // Construct the PDF URL with all necessary parameters
+    const pdfUrl = `../connection/pdf_${type}_${categorySlug}.php?` + 
+        `year=${encodeURIComponent(year)}&` +
+        `prepared_by_name=${encodeURIComponent(preparedByName)}&` +
+        `prepared_by_position=${encodeURIComponent(preparedByPosition)}&` +
+        `approved_by_name=${encodeURIComponent(approvedByName)}&` +
+        `approved_by_position=${encodeURIComponent(approvedByPosition)}`;
+
+    // Open the PDF in a new window/tab
+    window.open(pdfUrl, '_blank');
+}
+
 
 
 
 </script>
 
+<style>
+/* Add to your existing CSS */
+.category-card {
+    cursor: pointer;
+    position: relative;
+}
 
-    
+.year-selector {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.year-dropdown {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+</style>
+
 </body>
 </html>
