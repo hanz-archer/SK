@@ -193,7 +193,9 @@ if(isset($_GET['year'])) {
     $result = $stmt->get_result();
     
     if ($result->num_rows === 0) {
-        die("No data found for year $year");
+        header('Content-Type: text/plain');
+        echo "No data found for the specified year.";
+        exit;
     }
     
     // Use same adjusted column widths

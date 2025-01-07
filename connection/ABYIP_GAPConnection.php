@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($stmt->execute()) {
         // Generate PDF URL
-        $pdf_url = "../connection/pdf_abyip_gap.php?table=abyip_gap&year=" . urlencode($calendar_year) . "&month=" . urlencode($period_of_implementation);
+        $pdf_url = "../connection/pdf_abyip_general.php?table=abyip_gap&year=" . urlencode($calendar_year) . "&month=" . urlencode($period_of_implementation);
         
         echo json_encode([
             'status' => 'success',

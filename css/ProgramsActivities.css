@@ -212,3 +212,101 @@ header {
         font-size: 14px;
     }
 }
+
+/* Year Selector Dropdown Styles */
+.year-selector {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+    margin-top: 10px;
+    border: 1px solid #e48130;
+}
+
+.year-selector::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #e48130;
+}
+
+.year-dropdown {
+    padding: 10px 15px;
+    border: 2px solid #e48130;
+    border-radius: 6px;
+    font-size: 16px;
+    width: 140px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease;
+    margin-bottom: 10px;
+}
+
+.year-dropdown:hover {
+    border-color: #ffffff;
+    background-color: rgba(228, 129, 48, 0.2);
+}
+
+.year-dropdown:focus {
+    border-color: #ffffff;
+    box-shadow: 0 0 0 2px rgba(228, 129, 48, 0.3);
+}
+
+.year-dropdown option {
+    background-color: #000000;
+    color: white;
+    padding: 10px;
+}
+
+.close-selector {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 25px;
+    height: 25px;
+    background: #e48130;
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.close-selector:hover {
+    background: #ffffff;
+    color: #e48130;
+    transform: scale(1.1);
+}
+
+/* Animation for dropdown */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -10px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+.year-selector {
+    animation: fadeInDown 0.3s ease;
+}
