@@ -5,7 +5,14 @@ include('Connection.php');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+
 class PDF extends FPDF {
+    function __construct() {
+        parent::__construct();
+        // Just use the font name - FPDF will look for DejaVuSans.php in the font directory
+        $this->AddFont('DejaVuSans', '', 'DejaVuSans.php');
+    }
+
     // Add MultiCell with height calculation
     function MultiCellHeight($w, $h, $txt, $border=0, $align='J') {
         // Calculate height of text
@@ -169,7 +176,7 @@ class PDF extends FPDF {
 // Create PDF object with adjusted margins
 $pdf = new PDF();
 $pdf->AddPage();
-$pdf->SetFont('Arial', '', 8);
+$pdf->SetFont('DejaVuSans', '', 8);
 
 // Validate required parameters
 $year = isset($_GET['year']) ? intval($_GET['year']) : null;
@@ -263,8 +270,9 @@ if(isset($_GET['year'])) {
         $pdf->MultiCellTable($col_widths[4], $max_height, $txt_ppas);
         
         $pdf->SetXY($target_x + $col_widths[3] + $col_widths[4], $start_y);
-        $pdf->MultiCellTable($col_widths[5], $max_height, '₱' . number_format($row['budget'], 2) . "\nEvery year");
-        
+        $pdf->SetFont('Arial', '', 8);
+        $peso = 'P'; // Simple P for peso
+        $pdf->MultiCellTable($col_widths[5], $max_height, $peso . ' ' . number_format($row['budget'], 2) . "\nEvery year");        
         // Move to next row
         $pdf->SetY($start_y + $max_height);
     }

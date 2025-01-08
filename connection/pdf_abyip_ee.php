@@ -259,9 +259,9 @@ foreach ($data_entries as $data) {
     $pdf->Cell($w[5], $dynamicHeight, $data['period_of_implementation'], 1, 0, 'C');
 
     // Budget columns
-    $pdf->Cell(30, $dynamicHeight, '' . number_format($data['mooe'], 2), 1, 0, 'C');
-    $pdf->Cell(30, $dynamicHeight, '' . number_format($data['co'], 2), 1, 0, 'C');
-    $pdf->Cell(30, $dynamicHeight, '' . number_format($data['total'], 2), 1, 0, 'C');
+    $pdf->Cell(30, $dynamicHeight, 'P ' . number_format($data['mooe'], 2), 1, 0, 'C');
+    $pdf->Cell(30, $dynamicHeight, 'P ' . number_format($data['co'], 2), 1, 0, 'C');
+    $pdf->Cell(30, $dynamicHeight, 'P ' . number_format($data['total'], 2), 1, 0, 'C');
 
     // Person Responsible
     $pdf->MultiCellTable($w[7], $dynamicHeight, $data['person_responsible'], 1, 'L');

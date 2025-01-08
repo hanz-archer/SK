@@ -262,8 +262,9 @@ if(isset($_GET['year'])) {
         $pdf->SetXY($target_x + $col_widths[3], $start_y);
         $pdf->MultiCellTable($col_widths[4], $max_height, $txt_ppas);
         
-        $pdf->SetXY($target_x + $col_widths[3] + $col_widths[4], $start_y);
-        $pdf->MultiCellTable($col_widths[5], $max_height, '₱' . number_format($row['budget'], 2) . "\nEvery year");
+        $pdf->SetFont('Arial', '', 8); // Set font to Arial
+        $peso = 'P'; // Simple P for peso
+        $pdf->MultiCellTable($col_widths[5], $max_height, $peso . ' ' . number_format($row['budget'], 2) . "\nEvery year");
         
         // Move to next row
         $pdf->SetY($start_y + $max_height);
