@@ -5,46 +5,61 @@ include("../connection/Connection.php");
 function getAvailableYears($category, $type) {
     global $conn;
     
-    // Create a mapping for special category names
-    $categoryMapping = [
+    // Create separate mappings for CBYDP and ABYIP
+    $cbydpMapping = [
+        'social_inclusion_and_equity' => 'social',
+        'peace_building_and_security' => 'peace',
+        'active_citizenship' => 'citizenship',
+        'economic_empowerment' => 'economic',
+        'sports_development' => 'sports',
+        'general_administration' => 'general',
+        'education' => 'education',
+        'health' => 'health',
+        'environment' => 'environment',
+        'agriculture' => 'agriculture'
+    ];
+
+    $abyipMapping = [
         'social_inclusion_and_equity' => 'sie',
         'peace_building_and_security' => 'pbs',
         'active_citizenship' => 'ac',
         'economic_empowerment' => 'ee',
         'sports_development' => 'sports',
-        'general_administration' => 'gap'
+        'general_administration' => 'gap',
+        'education' => 'education',
+        'health' => 'health',
+        'environment' => 'environment',
+        'agriculture' => 'agriculture'
     ];
     
-    // Use mapped name if it exists, otherwise use the original
-    $tableName = $categoryMapping[$category] ?? $category;
+    // Debug log the incoming category
+    error_log("Incoming category to getAvailableYears: " . $category);
+    
+    // Use appropriate mapping based on type
+    if ($type === 'cbydp_pa') {
+        $tableName = $cbydpMapping[$category] ?? $category;
+    } else {
+        $tableName = $abyipMapping[$category] ?? $category;
+    }
+    
+    error_log("Mapped to table name: " . $tableName);
     
     // Different table name format for CBYDP and ABYIP
     if ($type === 'cbydp_pa') {
         $table = "cbydp_pa_{$tableName}";
     } else {
-        // Handle ABYIP table names
-        switch($tableName) {
-            case 'sie': $table = 'abyip_sie'; break;
-            case 'pbs': $table = 'abyip_pbs'; break;
-            case 'ac': $table = 'abyip_ac'; break;
-            case 'ee': $table = 'abyip_ee'; break;
-            case 'gap': $table = 'abyip_gap'; break;
-            case 'education': $table = 'abyip_education'; break;
-            case 'health': $table = 'abyip_health'; break;
-            case 'environment': $table = 'abyip_environment'; break;
-            case 'agriculture': $table = 'abyip_agriculture'; break;
-            case 'sports': $table = 'abyip_sports'; break;
-            default: $table = "abyip_{$tableName}";
-        }
+        $table = "abyip_{$tableName}";
     }
     
     $sql = "SELECT DISTINCT calendar_year FROM {$table} ORDER BY calendar_year DESC";
     
     try {
-        error_log("Type: " . $type); // Debug log
-        error_log("Category: " . $category); // Debug log
-        error_log("Table name: " . $table); // Debug log
-        error_log("SQL Query: " . $sql); // Debug log
+        error_log("=== Year Fetch Debug ===");
+        error_log("Original Category: " . $category);
+        error_log("Type: " . $type);
+        error_log("Mapped Table Name: " . $tableName);
+        error_log("Full Table Name: " . $table);
+        error_log("SQL Query: " . $sql);
         
         $result = $conn->query($sql);
         $years = array();
@@ -53,12 +68,12 @@ function getAvailableYears($category, $type) {
             while($row = $result->fetch_assoc()) {
                 $years[] = $row['calendar_year'];
             }
-            error_log("Found years: " . implode(", ", $years)); // Debug log
+            error_log("Found years: " . implode(", ", $years));
         } else {
-            error_log("No rows found in table: " . $table); // Debug log
+            error_log("No rows found in table: " . $table);
         }
-        
         return $years;
+        
     } catch (mysqli_sql_exception $e) {
         error_log("Error querying table {$table}: " . $e->getMessage());
         return array();
@@ -120,7 +135,6 @@ function generateYearOptions() {
                     "Peace Building and Security" => "Promoting human security, public safety, and national peace.",
                     "Agriculture" => "Encourage youth in agricultural development through education and sustainable practices..",
                     "Sports Development" => "Foster an environment where sports enhance youth participation and skill development.",
-                    "Governance" => "Create a supportive environment for youth that values sports and skill development.",
                     "General Administration" => " Empower the Sangguniang Kabataan Council to enhance leadership skills.."
                 ];
 
@@ -128,9 +142,18 @@ function generateYearOptions() {
                     // Convert category name to database-friendly format
                     $categorySlug = strtolower(str_replace(' ', '_', $category));
                     
+                    // Debug log the category conversion
+                    error_log("Converting category: " . $category . " to slug: " . $categorySlug);
+                    
                     // Get years for both CBYDP and ABYIP
                     $cbydpYears = getAvailableYears($categorySlug, 'cbydp_pa');
                     $abyipYears = getAvailableYears($categorySlug, 'abyip');
+                    
+                    error_log("=== Category Card Debug ===");
+                    error_log("Category: " . $category);
+                    error_log("Category Slug: " . $categorySlug);
+                    error_log("CBYDP Years: " . implode(", ", $cbydpYears));
+                    error_log("ABYIP Years: " . implode(", ", $abyipYears));
                     
                     echo "
                     <div class='category-card' onclick='showYearSelector(\"$category\", this)'>
@@ -138,7 +161,8 @@ function generateYearOptions() {
                         <p>$description</p>
                         <div class='year-selector' style='display: none;' 
                              data-cbydp-years='" . htmlspecialchars(json_encode($cbydpYears)) . "'
-                             data-abyip-years='" . htmlspecialchars(json_encode($abyipYears)) . "'>
+                             data-abyip-years='" . htmlspecialchars(json_encode($abyipYears)) . "'
+                             data-category-slug='" . htmlspecialchars($categorySlug) . "'>
                             <button class='close-selector' onclick='closeYearSelector(event, this)'>×</button>
                             <select class='year-dropdown' onchange='handleYearSelection(this, \"$category\")'>
                                 <option value=''>Select Year</option>
@@ -319,13 +343,19 @@ function showYearSelector(category, card) {
     const selector = card.querySelector('.year-selector');
     
     // Determine which type is active (CBYDP or ABYIP)
-    const isCBYDP = document.getElementById('CBYDP').classList.contains('hidden') === false;
-    const type = isCBYDP ? 'CBYDP' : 'ABYIP';
+    const isCBYDP = !document.getElementById('CBYDP').classList.contains('hidden');
+    const type = isCBYDP ? 'cbydp_pa' : 'abyip';
     
     // Get the years from the appropriate dataset
-    const years = type === 'CBYDP' 
+    const years = isCBYDP 
         ? JSON.parse(selector.dataset.cbydpYears || '[]')
         : JSON.parse(selector.dataset.abyipYears || '[]');
+    
+    console.log('Category:', category);
+    console.log('Type:', type);
+    console.log('Years:', years);
+    console.log('Dataset CBYDP:', selector.dataset.cbydpYears);
+    console.log('Dataset ABYIP:', selector.dataset.abyipYears);
     
     // Clear existing options except the first one
     const dropdown = selector.querySelector('.year-dropdown');
@@ -346,7 +376,7 @@ function showYearSelector(category, card) {
         Swal.fire({
             icon: 'info',
             title: 'No Data Available',
-            text: `No ${type} records available for this category yet.`,
+            text: `No ${isCBYDP ? 'CBYDP' : 'ABYIP'} records available for this category yet.`,
             confirmButtonColor: '#e48130'
         });
         return;
