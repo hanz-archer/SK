@@ -16,8 +16,21 @@ try {
     $category = $_GET['category'];
     $year = $_GET['year'];
 
-    // Create a mapping for special category names
-    $categoryMapping = [
+    // Create separate mappings for CBYDP and ABYIP
+    $cbydpMapping = [
+        'social_inclusion_and_equity' => 'social',
+        'peace_building_and_security' => 'peace',
+        'active_citizenship' => 'citizenship',
+        'economic_empowerment' => 'economic',
+        'sports_development' => 'sports',
+        'general_administration' => 'general',
+        'education' => 'education',
+        'health' => 'health',
+        'environment' => 'environment',
+        'agriculture' => 'agriculture'
+    ];
+
+    $abyipMapping = [
         'social_inclusion_and_equity' => 'sie',
         'peace_building_and_security' => 'pbs',
         'active_citizenship' => 'ac',
@@ -30,8 +43,12 @@ try {
         'agriculture' => 'agriculture'
     ];
 
-    // Use mapped name if it exists, otherwise use the original
-    $tableName = $categoryMapping[$category] ?? $category;
+    // Use appropriate mapping based on type
+    if ($type === 'cbydp') {
+        $tableName = $cbydpMapping[$category] ?? $category;
+    } else {
+        $tableName = $abyipMapping[$category] ?? $category;
+    }
 
     // Different table name format for CBYDP and ABYIP
     if ($type === 'cbydp') {

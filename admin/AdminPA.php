@@ -344,7 +344,7 @@ function showYearSelector(category, card) {
     
     // Determine which type is active (CBYDP or ABYIP)
     const isCBYDP = !document.getElementById('CBYDP').classList.contains('hidden');
-    const type = isCBYDP ? 'cbydp_pa' : 'abyip';
+    const type = isCBYDP ? 'cbydp' : 'abyip';
     
     // Get the years from the appropriate dataset
     const years = isCBYDP 
@@ -393,22 +393,37 @@ function handleYearSelection(selectElement, category) {
     const isCBYDP = !document.getElementById('CBYDP').classList.contains('hidden');
     const type = isCBYDP ? 'cbydp' : 'abyip';
     
-    // Create a mapping for PDF file names
-    const pdfMapping = {
-        'Social Inclusion and Equity': 'sie',
-        'Peace Building and Security': 'pbs',
-        'Active Citizenship': 'ac',
-        'Economic Empowerment': 'ee',
+    // Create separate mappings for CBYDP and ABYIP
+    const cbydpMapping = {
+        'Social Inclusion and Equity': 'social',
+        'Peace Building and Security': 'peace',
+        'Active Citizenship': 'citizenship',
+        'Economic Empowerment': 'economic',
         'Sports Development': 'sports',
-        'General Administration': 'gap',
+        'General Administration': 'general', // This matches your database table name
         'Education': 'education',
         'Health': 'health',
         'Environment': 'environment',
         'Agriculture': 'agriculture'
     };
 
-    // Get the PDF slug for the category
-    const pdfSlug = pdfMapping[category];
+    const abyipMapping = {
+        'Social Inclusion and Equity': 'sie',
+        'Peace Building and Security': 'pbs',
+        'Active Citizenship': 'ac',
+        'Economic Empowerment': 'ee',
+        'Sports Development': 'sports',
+        'General Administration': 'general',
+        'Education': 'education',
+        'Health': 'health',
+        'Environment': 'environment',
+        'Agriculture': 'agriculture'
+    };
+
+    // Use appropriate mapping based on type
+    const mapping = isCBYDP ? cbydpMapping : abyipMapping;
+    const pdfSlug = mapping[category];
+
     if (!pdfSlug) {
         console.error('Unknown category:', category);
         return;
