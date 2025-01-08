@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 07, 2025 at 05:12 PM
+-- Generation Time: Jan 08, 2025 at 03:27 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -567,7 +567,8 @@ INSERT INTO `cbydp_pa_citizenship` (`id`, `calendar_year`, `youth_development_co
 (1, 2025, 'asd', 'asd', 'asd', 'asd', 'asd', 'asd', 'asd', 123.00, 'HANZ', 'HANZ', 'Chairperson', 'AHANZ', 'Chairperson', '2025-01-05 18:41:31'),
 (2, 2025, 'asd', 'asd', 'asd', 'asd', 'asd', 'asd', 'asd', 123.00, 'HANZ', 'HANZ', 'Chairperson', 'AHANZ', 'Councilor', '2025-01-05 18:43:47'),
 (3, 2025, 'asd', 'asd', 'asd', 'asd', 'asd', 'asd', 'asd', 123.00, 'HANZ', 'HANZ', 'Chairperson', 'AHANZ', 'Councilor', '2025-01-05 18:46:19'),
-(4, 2025, 'asd', 'asd', 'asd', 'asd', 'asd', 'asd', 'asd', 213.00, 'HANZ', 'HANZ', 'Councilor', 'AHANZ', 'Councilor', '2025-01-05 18:51:21');
+(4, 2025, 'asd', 'asd', 'asd', 'asd', 'asd', 'asd', 'asd', 213.00, 'HANZ', 'HANZ', 'Councilor', 'AHANZ', 'Councilor', '2025-01-05 18:51:21'),
+(5, 2020, 'asd', 'asd', 'asd', '23', 'asd', '123', '123', 123.00, 'HANZ', 'HANZ', 'Chairperson', 'HANZ', 'Chairperson', '2025-01-08 02:21:07');
 
 -- --------------------------------------------------------
 
@@ -593,13 +594,6 @@ CREATE TABLE `cbydp_pa_economic` (
   `approved_by_position` varchar(50) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
---
--- Dumping data for table `cbydp_pa_economic`
---
-
-INSERT INTO `cbydp_pa_economic` (`id`, `calendar_year`, `youth_development_concern`, `objective`, `performance_indicator`, `target_2024`, `target_2025`, `target_2026`, `ppas`, `budget`, `responsible_person`, `prepared_by_name`, `prepared_by_position`, `approved_by_name`, `approved_by_position`, `created_at`) VALUES
-(1, 2025, 'd', 'd', 'd', 'asd', 'asd', 'asdasd', 'asd', 23.00, 'HANZ', 'HANZ', 'Chairperson', 'AHANZ', 'Councilor', '2025-01-05 19:05:49');
 
 -- --------------------------------------------------------
 
@@ -704,7 +698,8 @@ CREATE TABLE `cbydp_pa_general` (
 --
 
 INSERT INTO `cbydp_pa_general` (`id`, `calendar_year`, `youth_development_concern`, `objective`, `performance_indicator`, `target_2024`, `target_2025`, `target_2026`, `ppas`, `budget`, `responsible_person`, `prepared_by_name`, `prepared_by_position`, `approved_by_name`, `approved_by_position`, `created_at`, `updated_at`) VALUES
-(1, 2025, '1', '1', '1', '1', '1', '1', '1', 2.00, 'HANZ', 'HANZ', 'Chairperson', 'AHANZ', 'Chairperson', '2025-01-05 19:21:00', '2025-01-05 19:21:00');
+(1, 2025, '1', '1', '1', '1', '1', '1', '1', 2.00, 'HANZ', 'HANZ', 'Chairperson', 'AHANZ', 'Chairperson', '2025-01-05 19:21:00', '2025-01-05 19:21:00'),
+(2, 2024, 'sadasd', 'asd', 'asd', 'asd', '123', '123', '123', 213.00, 'HANZ', 'HANZ', 'Councilor', 'HANZ', 'Chairperson', '2025-01-08 01:21:54', '2025-01-08 01:21:54');
 
 -- --------------------------------------------------------
 
@@ -908,8 +903,8 @@ CREATE TABLE `meetings` (
 --
 
 INSERT INTO `meetings` (`id`, `meeting_title`, `date_of_meeting`, `call_to_order`, `invocation`, `roll_call`, `reading_minutes`, `agenda`, `calendar_of_business`, `adjournment`, `prepared_by_name`, `prepared_by_position`, `attested_by_name`, `attested_by_position`, `created_at`, `visibility`) VALUES
-(1, '1111111', '2025-01-01', '   SK Chairperson Hon. Kian Cabase called the meeting to order at 12:00 pm and continued to preside over the session. ', '          The invocation was done by SK Secretary Hanzel  A . Agarao, followed by the singing of the national anthem led by Hon. Cherielou S. Caspe. ', '     The SK secretary Hanzel A. Agarao called the names of the SK members as instructed by the SK chairperson, and since only one member of the Sangguniang Kabataan is absent, a quorum was declared present.', '', '1.	IRP (Internal Rules and Procedure)\r\n2.	Process requirements for Sangguniang Kabataan Fidelity Bond\r\n3.	Process for Sangguniang Kabataan Open Bank Account by the newly designated signatories\r\n4.	Process for SK TIN Number\r\n5.	Take a seat in the next session with Hon. Jerome Sarvida Barangay Councilor.\r\n', '                    Today’s Business\r\n1.	Councilor Erica Sijesmundo mentioned the IRP of Sangguniang Kabataan and duly seconded by the majority.\r\n2.	Mentioned by Councilor Jackelyn Albor and duly seconded by all the members of the council.\r\n3.	It was mentioned by Councilor Rowelyn Saragena, to update the opening of bank account of Sangguniang Kabataan, Barangay, Sumaguan, Argao and it was duly seconded by the majority of the council.\r\n4.	Process for SK TIN Number was mentioned by SK Chairperson Kian S. Cabase, and duly seconded by the majority of the council .\r\n5.	The SK Chairperson mentioned that in the next session on February 3, 2024, we will be inviting Hon. Jerome Sarvida, the Councilor of Barangay Sumaguan. \r\n', '    After a thorough deliberation, no there is no more concerns being raised the motion to adjourned was made by SK Secretary Avegael Angel C. Saragena and was duly seconded by Hon. Jhon Paul Agarao at 1:08 pm. ', 'HANZEL A. AGARAO', 'Secretary', 'HON. KIAN S. CABASE', 'Chairperson', '2024-12-31 20:27:29', 1),
-(2, 'DSDASD', '2025-01-02', '    SK Chairperson Hon. Kian Cabase called the meeting to order at 12:00 pm and continued to preside over the session. ', '          The invocation was done by SK Secretary Hanzel  A . Agarao, followed by the singing of the national anthem led by Hon. Cherielou S. Caspe. ', 'The SK secretary Hanzel A. Agarao called the names of the SK members as instructed by the SK chairperson, and since only one member of the Sangguniang Kabataan is absent, a quorum was declared present.', 'The SK Chairman read the approval of the previous minutes. The approval was only in processing for SK TIN Number', '1.	IRP (Internal Rules and Procedure)\r\n2.	Process requirements for Sangguniang Kabataan Fidelity Bond\r\n3.	Process for Sangguniang Kabataan Open Bank Account by the newly designated signatories\r\n4.	Process for SK TIN Number\r\n5.	Take a seat in the next session with Hon. Jerome Sarvida Barangay Councilor.\r\n', '                    Today’s Business\r\n1.	Councilor Erica Sijesmundo mentioned the IRP of Sangguniang Kabataan and duly seconded by the majority.\r\n2.	Mentioned by Councilor Jackelyn Albor and duly seconded by all the members of the council.\r\n3.	It was mentioned by Councilor Rowelyn Saragena, to update the opening of bank account of Sangguniang Kabataan, Barangay, Sumaguan, Argao and it was duly seconded by the majority of the council.\r\n4.	Process for SK TIN Number was mentioned by SK Chairperson Kian S. Cabase, and duly seconded by the majority of the council .\r\n5.	The SK Chairperson mentioned that in the next session on February 3, 2024, we will be inviting Hon. Jerome Sarvida, the Councilor of Barangay Sumaguan. \r\n', '    After a thorough deliberation, no there is no more concerns being raised the motion to adjourned was made by SK Secretary Avegael Angel C. Saragena and was duly seconded by Hon. Jhon Paul Agarao at 1:08 pm. ', 'HANZEL A. AGARAO', 'Secretary', 'HON. KIAN S. CABASE', 'Chairperson', '2025-01-02 12:42:21', 1);
+(1, 'Lowells Vape Update', '2025-01-01', '   SK Chairperson Hon. Kian Cabase called the meeting to order at 12:00 pm and continued to preside over the session. ', '          The invocation was done by SK Secretary Hanzel  A . Agarao, followed by the singing of the national anthem led by Hon. Cherielou S. Caspe. ', '     The SK secretary Hanzel A. Agarao called the names of the SK members as instructed by the SK chairperson, and since only one member of the Sangguniang Kabataan is absent, a quorum was declared present.', '', '1.	IRP (Internal Rules and Procedure)\\r\\n2.	Process requirements for Sangguniang Kabataan Fidelity Bond\\r\\n3.	Process for Sangguniang Kabataan Open Bank Account by the newly designated signatories\\r\\n4.	Process for SK TIN Number\\r\\n5.	Take a seat in the next session with Hon. Jerome Sarvida Barangay Councilor.\\r\\n', '                    Todayï¿½s Business\\r\\n1.	Councilor Erica Sijesmundo mentioned the IRP of Sangguniang Kabataan and duly seconded by the majority.\\r\\n2.	Mentioned by Councilor Jackelyn Albor and duly seconded by all the members of the council.\\r\\n3.	It was mentioned by Councilor Rowelyn Saragena, to update the opening of bank account of Sangguniang Kabataan, Barangay, Sumaguan, Argao and it was duly seconded by the majority of the council.\\r\\n4.	Process for SK TIN Number was mentioned by SK Chairperson Kian S. Cabase, and duly seconded by the majority of the council .\\r\\n5.	The SK Chairperson mentioned that in the next session on February 3, 2024, we will be inviting Hon. Jerome Sarvida, the Councilor of Barangay Sumaguan. \\r\\n', '    After a thorough deliberation, no there is no more concerns being raised the motion to adjourned was made by SK Secretary Avegael Angel C. Saragena and was duly seconded by Hon. Jhon Paul Agarao at 1:08 pm. ', 'HANZEL A. AGARAO', 'Secretary', 'HON. KIAN S. CABASE', 'Chairperson', '2024-12-31 20:27:29', 1),
+(2, 'JOSHUA EYE IMPLANT PROJECT FOR BARANGGAY TALAYTAY', '2025-01-02', '    SK Chairperson Hon. Kian Cabase called the meeting to order at 12:00 pm and continued to preside over the session. ', '          The invocation was done by SK Secretary Hanzel  A . Agarao, followed by the singing of the national anthem led by Hon. Cherielou S. Caspe. ', 'The SK secretary Hanzel A. Agarao called the names of the SK members as instructed by the SK chairperson, and since only one member of the Sangguniang Kabataan is absent, a quorum was declared present.', 'The SK Chairman read the approval of the previous minutes. The approval was only in processing for SK TIN Number', '1.	IRP (Internal Rules and Procedure)\\\\\\\\r\\\\\\\\n2.	Process requirements for Sangguniang Kabataan Fidelity Bond\\\\\\\\r\\\\\\\\n3.	Process for Sangguniang Kabataan Open Bank Account by the newly designated signatories\\\\\\\\r\\\\\\\\n4.	Process for SK TIN Number\\\\\\\\r\\\\\\\\n5.	Take a seat in the next session with Hon. Jerome Sarvida Barangay Councilor.\\\\\\\\r\\\\\\\\n', '                    Todayï¿½s Business\\\\\\\\r\\\\\\\\n1.	Councilor Erica Sijesmundo mentioned the IRP of Sangguniang Kabataan and duly seconded by the majority.\\\\\\\\r\\\\\\\\n2.	Mentioned by Councilor Jackelyn Albor and duly seconded by all the members of the council.\\\\\\\\r\\\\\\\\n3.	It was mentioned by Councilor Rowelyn Saragena, to update the opening of bank account of Sangguniang Kabataan, Barangay, Sumaguan, Argao and it was duly seconded by the majority of the council.\\\\\\\\r\\\\\\\\n4.	Process for SK TIN Number was mentioned by SK Chairperson Kian S. Cabase, and duly seconded by the majority of the council .\\\\\\\\r\\\\\\\\n5.	The SK Chairperson mentioned that in the next session on February 3, 2024, we will be inviting Hon. Jerome Sarvida, the Councilor of Barangay Sumaguan. \\\\\\\\r\\\\\\\\n', '    After a thorough deliberation, no there is no more concerns being raised the motion to adjourned was made by SK Secretary Avegael Angel C. Saragena and was duly seconded by Hon. Jhon Paul Agarao at 1:08 pm. ', 'HANZEL A. AGARAO', 'Secretary', 'HON. KIAN S. CABASE', 'Chairperson', '2025-01-02 12:42:21', 1);
 
 -- --------------------------------------------------------
 
@@ -1545,7 +1540,7 @@ ALTER TABLE `cbydp_pa_agriculture`
 -- AUTO_INCREMENT for table `cbydp_pa_citizenship`
 --
 ALTER TABLE `cbydp_pa_citizenship`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `cbydp_pa_economic`
@@ -1569,7 +1564,7 @@ ALTER TABLE `cbydp_pa_environment`
 -- AUTO_INCREMENT for table `cbydp_pa_general`
 --
 ALTER TABLE `cbydp_pa_general`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `cbydp_pa_governance`
