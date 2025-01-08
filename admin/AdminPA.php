@@ -322,20 +322,13 @@ function showYearSelector(category, card) {
     const isCBYDP = document.getElementById('CBYDP').classList.contains('hidden') === false;
     const type = isCBYDP ? 'CBYDP' : 'ABYIP';
     
-    console.log('Type:', type);
-    console.log('Category:', category);
-    
     // Get the years from the appropriate dataset
     const years = type === 'CBYDP' 
         ? JSON.parse(selector.dataset.cbydpYears || '[]')
         : JSON.parse(selector.dataset.abyipYears || '[]');
     
-    console.log('Available years:', years);
-    
-    // Update the dropdown options
-    const dropdown = selector.querySelector('.year-dropdown');
-    
     // Clear existing options except the first one
+    const dropdown = selector.querySelector('.year-dropdown');
     while (dropdown.options.length > 1) {
         dropdown.remove(1);
     }
@@ -370,64 +363,56 @@ function handleYearSelection(selectElement, category) {
     const isCBYDP = !document.getElementById('CBYDP').classList.contains('hidden');
     const type = isCBYDP ? 'cbydp' : 'abyip';
     
-    // Create a mapping object for categories to their URL slugs
-    const categoryMapping = {
+    // Create a mapping for PDF file names
+    const pdfMapping = {
+        'Social Inclusion and Equity': 'sie',
+        'Peace Building and Security': 'pbs',
+        'Active Citizenship': 'ac',
+        'Economic Empowerment': 'ee',
+        'Sports Development': 'sports',
+        'General Administration': 'gap',
         'Education': 'education',
         'Health': 'health',
         'Environment': 'environment',
-        'Social Inclusion and Equity': 'social',
-        'Active Citizenship': 'citizenship',
-        'Economic Empowerment': 'economic',
-        'Peace Building and Security': 'peace',
-        'Agriculture': 'agriculture',
-        'Sports Development': 'sports',
-        'Governance': 'governance',
-        'General Administration': 'general'
+        'Agriculture': 'agriculture'
     };
 
-    // Get the URL slug for the category
-    const categorySlug = categoryMapping[category];
-    if (!categorySlug) {
+    // Get the PDF slug for the category
+    const pdfSlug = pdfMapping[category];
+    if (!pdfSlug) {
         console.error('Unknown category:', category);
         return;
     }
 
-    // Get the form values
-    const preparedByName = document.getElementById('prepared_by_name')?.value || '';
-    const preparedByPosition = document.getElementById('prepared_by_position')?.value || '';
-    const approvedByName = document.getElementById('approved_by_name')?.value || '';
-    const approvedByPosition = document.getElementById('approved_by_position')?.value || '';
+    // Convert category to database-friendly format
+    const dbCategory = category.toLowerCase().replace(/ /g, '_');
 
-    // Construct the PDF URL
-    const pdfUrl = `../connection/pdf_${type}_${categorySlug}.php?` + 
-        `year=${encodeURIComponent(year)}&` +
-        `prepared_by_name=${encodeURIComponent(preparedByName)}&` +
-        `prepared_by_position=${encodeURIComponent(preparedByPosition)}&` +
-        `approved_by_name=${encodeURIComponent(approvedByName)}&` +
-        `approved_by_position=${encodeURIComponent(approvedByPosition)}`;
-
-    // Fetch the PDF URL first to check for errors
-    fetch(pdfUrl)
-        .then(response => response.text())
-        .then(data => {
-            if (data.includes("No data found")) {
-                // Show error message using SweetAlert2
-                Swal.fire({
-                    icon: 'info',
-                    title: 'No Data Available',
-                    text: `No data found for year ${year}`,
-                    confirmButtonColor: '#3085d6'
-                });
-            } else {
-                // If data exists, open the PDF in a new window
-                window.open(pdfUrl, '_blank');
+    // Fetch signatories first
+    fetch(`../connection/get_signatories.php?type=${type}&category=${dbCategory}&year=${year}`)
+        .then(response => response.json())
+        .then(response => {
+            if (response.status === 'error') {
+                throw new Error(response.message);
             }
+
+            const data = response.data;
+            
+            // Construct the PDF URL with fetched signatories
+            const pdfUrl = `../connection/pdf_${type}_${pdfSlug}.php?` + 
+                `year=${encodeURIComponent(year)}&` +
+                `prepared_by_name=${encodeURIComponent(data.prepared_by_name)}&` +
+                `prepared_by_position=${encodeURIComponent(data.prepared_by_position)}&` +
+                `approved_by_name=${encodeURIComponent(data.approved_by_name)}&` +
+                `approved_by_position=${encodeURIComponent(data.approved_by_position)}`;
+
+            // Open PDF in new window
+            window.open(pdfUrl, '_blank');
         })
         .catch(error => {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'An error occurred while generating the PDF',
+                text: error.message || 'Failed to fetch signatories',
                 confirmButtonColor: '#3085d6'
             });
         });
